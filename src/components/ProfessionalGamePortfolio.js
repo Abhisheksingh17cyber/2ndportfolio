@@ -679,6 +679,427 @@ const ProfessionalGamePortfolio = () => {
     </div>
   );
 
+  // Content rendering functions
+  const renderHome = () => (
+    <div className="space-y-8">
+      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-900/40 via-purple-900/40 to-pink-900/40 rounded-3xl p-12 border-2 border-purple-500/30 backdrop-blur-xl">
+        <div className="relative z-10 text-center">
+          <div className="inline-block mb-6">
+            <div className="relative">
+              <div className="w-40 h-40 bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 rounded-full flex items-center justify-center text-7xl font-bold text-white shadow-2xl">
+                AS
+              </div>
+              <div className="absolute -top-2 -right-2 bg-yellow-400 rounded-full p-3 animate-bounce">
+                <Star className="w-8 h-8 text-yellow-900" />
+              </div>
+              <div className="absolute -bottom-2 -left-2 bg-green-400 rounded-full p-3 animate-pulse">
+                <Cpu className="w-8 h-8 text-green-900" />
+              </div>
+            </div>
+          </div>
+          
+          <h1 className="text-6xl font-black mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent">
+            {typing}
+            <span className="animate-pulse">|</span>
+          </h1>
+          
+          <div className="flex flex-wrap justify-center gap-3 mb-6">
+            <span className="px-4 py-2 bg-blue-500/20 border border-blue-400 rounded-full text-blue-300 font-semibold">Full Stack Developer</span>
+            <span className="px-4 py-2 bg-purple-500/20 border border-purple-400 rounded-full text-purple-300 font-semibold">AI Enthusiast</span>
+            <span className="px-4 py-2 bg-pink-500/20 border border-pink-400 rounded-full text-pink-300 font-semibold">Digital Marketer</span>
+          </div>
+          
+          <p className="text-2xl text-gray-300 mb-2">Computer Science Engineering Student</p>
+          <div className="flex items-center justify-center gap-3 text-xl">
+            <Trophy className="w-6 h-6 text-yellow-400" />
+            <span className="text-yellow-400 font-bold">Level {playerLevel} Developer</span>
+            <Zap className="w-6 h-6 text-purple-400" />
+            <span className="text-purple-400 font-bold">{score} XP</span>
+          </div>
+          
+          {combo > 5 && (
+            <div className="mt-4 text-orange-400 font-bold text-xl animate-pulse">
+              🔥 {combo}x COMBO STREAK! 🔥
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Level Selection Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {Object.entries(levels).map(([key, level]) => {
+          if (key === 'home') return null;
+          const Icon = level.icon;
+          return (
+            <button
+              key={key}
+              onClick={() => navigateToLevel(key)}
+              className={`group relative ${level.gradient} ${level.color} p-8 rounded-2xl shadow-2xl hover:scale-105 transform transition-all duration-300 border-2 border-white/20 overflow-hidden`}
+            >
+              <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-all duration-300" />
+              <div className="relative z-10">
+                <Icon className="w-16 h-16 mb-4 mx-auto group-hover:scale-110 transition-transform" />
+                <h3 className="text-2xl font-bold mb-2">{level.name}</h3>
+                <p className="text-sm opacity-90 mb-3">{level.description}</p>
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-xs bg-white/20 px-3 py-1 rounded-full">{level.rewards}</span>
+                  <ChevronRight className="w-5 h-5 animate-bounce" />
+                </div>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Performance Dashboard */}
+      <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-xl rounded-3xl p-8 border-2 border-purple-500/30">
+        <h3 className="text-3xl font-bold mb-6 flex items-center gap-3">
+          <Trophy className="w-8 h-8 text-yellow-400" />
+          Performance Dashboard
+        </h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="bg-gradient-to-br from-blue-600/30 to-cyan-600/30 rounded-xl p-6 text-center border border-blue-500/30 hover:scale-105 transition-transform">
+            <Award className="w-8 h-8 mx-auto mb-2 text-blue-400" />
+            <div className="text-4xl font-bold text-blue-300">{certifications.length}</div>
+            <div className="text-sm text-gray-300">Certifications</div>
+          </div>
+          <div className="bg-gradient-to-br from-green-600/30 to-emerald-600/30 rounded-xl p-6 text-center border border-green-500/30 hover:scale-105 transition-transform">
+            <Terminal className="w-8 h-8 mx-auto mb-2 text-green-400" />
+            <div className="text-4xl font-bold text-green-300">{projects.length}</div>
+            <div className="text-sm text-gray-300">Projects Built</div>
+          </div>
+          <div className="bg-gradient-to-br from-purple-600/30 to-pink-600/30 rounded-xl p-6 text-center border border-purple-500/30 hover:scale-105 transition-transform">
+            <Code className="w-8 h-8 mx-auto mb-2 text-purple-400" />
+            <div className="text-4xl font-bold text-purple-300">{skillCategories.reduce((acc, cat) => acc + cat.skills.length, 0)}</div>
+            <div className="text-sm text-gray-300">Tech Skills</div>
+          </div>
+          <div className="bg-gradient-to-br from-orange-600/30 to-red-600/30 rounded-xl p-6 text-center border border-orange-500/30 hover:scale-105 transition-transform">
+            <Briefcase className="w-8 h-8 mx-auto mb-2 text-orange-400" />
+            <div className="text-4xl font-bold text-orange-300">{experiences.length}</div>
+            <div className="text-sm text-gray-300">Experiences</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderAbout = () => (
+    <div className="space-y-6">
+      <h2 className="text-5xl font-black mb-8 flex items-center gap-4 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+        <User className="w-12 h-12 text-blue-400" />
+        Player Profile
+      </h2>
+      
+      <div className="bg-gradient-to-br from-blue-900/50 via-cyan-900/50 to-teal-900/50 rounded-3xl p-10 border-2 border-blue-500/30 backdrop-blur-xl">
+        <h3 className="text-3xl font-bold mb-6 flex items-center gap-2">
+          <Coffee className="w-8 h-8 text-cyan-400" />
+          About Me
+        </h3>
+        <div className="space-y-4 text-lg leading-relaxed">
+          <p className="text-gray-200">
+            🚀 Passionate <span className="text-cyan-400 font-bold">Computer Science Engineering student</span> and aspiring <span className="text-blue-400 font-bold">Full Stack Developer</span> with a proven track record in modern web technologies, AI/ML integration, and digital marketing strategies.
+          </p>
+          <p className="text-gray-200">
+            💡 Demonstrated expertise through <span className="text-yellow-400 font-bold">10+ professional certifications</span> spanning React.js, AI technologies, SEO optimization, and cybersecurity. Strong foundation in programming with hands-on experience in <span className="text-green-400 font-bold">real-world project development</span> and social impact initiatives.
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-gray-900/70 rounded-2xl p-8 border-2 border-cyan-500/30 backdrop-blur-sm hover:scale-105 transition-transform">
+          <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <BookOpen className="w-7 h-7 text-cyan-400" />
+            Education
+          </h3>
+          <div className="space-y-3">
+            <p className="text-xl font-bold text-cyan-300">Bachelor of Technology</p>
+            <p className="text-lg text-gray-300">Computer Science Engineering</p>
+            <p className="text-gray-400">Babu Banarasi Das University, Lucknow</p>
+            <p className="text-blue-400 font-semibold">2022 - 2026</p>
+          </div>
+        </div>
+        
+        <div className="bg-gray-900/70 rounded-2xl p-8 border-2 border-blue-500/30 backdrop-blur-sm hover:scale-105 transition-transform">
+          <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <MapPin className="w-7 h-7 text-blue-400" />
+            Location
+          </h3>
+          <div className="space-y-2">
+            <p className="text-lg">SS-165,166 Sector C-1 L.D.A. Colony</p>
+            <p className="text-gray-300">Kanpur Road, Lucknow</p>
+            <p className="text-gray-400">Uttar Pradesh - 226012</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderSkills = () => (
+    <div className="space-y-6">
+      <h2 className="text-5xl font-black mb-8 flex items-center gap-4 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+        <Cpu className="w-12 h-12 text-green-400" />
+        Skill Tree
+      </h2>
+      
+      {skillCategories.map((category, idx) => {
+        const Icon = category.icon;
+        return (
+          <div key={idx} className={`bg-gradient-to-br ${category.color} bg-opacity-10 rounded-3xl p-8 border-2 border-opacity-30 backdrop-blur-xl hover:scale-[1.02] transition-transform`}>
+            <h3 className="text-3xl font-bold mb-6 flex items-center gap-3">
+              <Icon className="w-8 h-8" />
+              {category.category}
+              <span className="text-sm bg-white/20 px-3 py-1 rounded-full ml-auto">{category.level}</span>
+            </h3>
+            <div className="space-y-4">
+              {category.skills.map((skill, i) => (
+                <div key={i} className="bg-gray-900/50 rounded-xl p-4 hover:bg-gray-900/70 transition-colors">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-lg font-semibold">{skill.name}</span>
+                    <div className="flex gap-2">
+                      <span className="text-sm bg-white/10 px-3 py-1 rounded-full">{skill.projects} projects</span>
+                      <span className="text-sm bg-purple-500/30 px-3 py-1 rounded-full">{skill.mastery}</span>
+                    </div>
+                  </div>
+                  <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+                    <div 
+                      className={`h-full bg-gradient-to-r ${category.color} transition-all duration-1000`}
+                      style={{ width: `${skill.level}%` }}
+                    />
+                  </div>
+                  <div className="text-right text-sm text-gray-400 mt-1">{skill.level}% Proficiency</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  const renderProjects = () => (
+    <div className="space-y-6">
+      <h2 className="text-5xl font-black mb-8 flex items-center gap-4 bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+        <Terminal className="w-12 h-12 text-orange-400" />
+        Achievement Vault
+      </h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {projects.map((project, idx) => (
+          <div
+            key={idx}
+            className="bg-gradient-to-br from-orange-900/30 to-red-900/30 rounded-2xl p-6 border-2 border-orange-500/30 backdrop-blur-sm hover:scale-105 transition-transform cursor-pointer"
+            onClick={() => openModal(project)}
+          >
+            <div className="flex justify-between items-start mb-4">
+              <h3 className="text-2xl font-bold">{project.title}</h3>
+              <div className="flex flex-col gap-1">
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                  project.status === 'Production' ? 'bg-green-600' : 'bg-yellow-600'
+                }`}>
+                  {project.status}
+                </span>
+                <span className="px-3 py-1 bg-purple-600/30 rounded-full text-xs font-semibold">
+                  {project.difficulty}
+                </span>
+              </div>
+            </div>
+            
+            <p className="text-gray-300 mb-4">{project.description}</p>
+            
+            <div className="flex flex-wrap gap-2 mb-4">
+              {project.tech.map((tech, i) => (
+                <span key={i} className="px-3 py-1 bg-orange-600/30 rounded-full text-xs font-semibold">
+                  {tech}
+                </span>
+              ))}
+            </div>
+            
+            <div className="flex justify-between items-center pt-4 border-t border-gray-700">
+              <span className="text-sm text-gray-400">Impact: {project.impact}</span>
+              <Github className="w-5 h-5 text-gray-400 hover:text-white transition-colors" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderExperience = () => (
+    <div className="space-y-6">
+      <h2 className="text-5xl font-black mb-8 flex items-center gap-4 bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+        <Briefcase className="w-12 h-12 text-yellow-400" />
+        Quest Log
+      </h2>
+      
+      {experiences.map((exp, idx) => {
+        const Icon = exp.icon;
+        return (
+          <div
+            key={idx}
+            className={`bg-gradient-to-br ${exp.color} bg-opacity-10 rounded-3xl p-8 border-2 border-opacity-30 backdrop-blur-xl hover:scale-[1.02] transition-transform cursor-pointer`}
+            onClick={() => openModal(exp)}
+          >
+            <div className="flex justify-between items-start mb-4">
+              <div className="flex items-start gap-4">
+                <div className={`p-3 rounded-xl bg-gradient-to-br ${exp.color}`}>
+                  <Icon className="w-8 h-8" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold mb-1">{exp.title}</h3>
+                  <p className="text-lg text-gray-300">{exp.company}</p>
+                  <p className="text-sm text-gray-400">{exp.period}</p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className={`px-4 py-2 rounded-full text-sm font-semibold ${
+                  exp.status === 'Legendary' ? 'bg-yellow-600' : 
+                  exp.status === 'Completed' ? 'bg-green-600' : 'bg-blue-600'
+                }`}>
+                  {exp.type}
+                </span>
+                <span className="px-3 py-1 bg-white/20 rounded-full text-xs font-semibold">
+                  {exp.difficulty}
+                </span>
+              </div>
+            </div>
+            
+            <div className="space-y-2 mb-4">
+              {exp.details.slice(0, 3).map((detail, i) => (
+                <div key={i} className="flex items-start gap-2 text-sm">
+                  <ChevronRight className="w-4 h-4 mt-1 flex-shrink-0" />
+                  <span>{detail}</span>
+                </div>
+              ))}
+            </div>
+            
+            <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-700">
+              {exp.skills.map((skill, i) => (
+                <span key={i} className="px-3 py-1 bg-white/10 rounded-full text-xs font-semibold">
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  const renderCertifications = () => (
+    <div className="space-y-6">
+      <h2 className="text-5xl font-black mb-8 flex items-center gap-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+        <Award className="w-12 h-12 text-purple-400" />
+        Honor Hall
+      </h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {certifications.map((cert, idx) => {
+          const Icon = cert.icon;
+          return (
+            <div
+              key={idx}
+              className={`bg-gradient-to-br ${cert.color} bg-opacity-10 rounded-2xl p-6 border-2 border-opacity-30 backdrop-blur-sm hover:scale-105 transition-transform cursor-pointer`}
+              onClick={() => openModal(cert)}
+            >
+              <div className="flex justify-between items-start mb-4">
+                <div className={`p-3 rounded-xl bg-gradient-to-br ${cert.color} inline-block`}>
+                  <Icon className="w-8 h-8" />
+                </div>
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                  cert.rarity === 'Legendary' ? 'bg-yellow-600' :
+                  cert.rarity === 'Epic' ? 'bg-purple-600' : 'bg-blue-600'
+                }`}>
+                  {cert.rarity}
+                </span>
+              </div>
+              <h3 className="text-xl font-bold mb-2">{cert.name}</h3>
+              <p className="text-gray-300 mb-2">{cert.org}</p>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-400">{cert.date}</span>
+                {cert.id && (
+                  <span className="text-xs bg-white/10 px-2 py-1 rounded">
+                    ID: {cert.id.slice(0, 8)}...
+                  </span>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  const renderContact = () => (
+    <div className="space-y-6">
+      <h2 className="text-5xl font-black mb-8 flex items-center gap-4 bg-gradient-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent">
+        <Globe className="w-12 h-12 text-pink-400" />
+        Communication Portal
+      </h2>
+      
+      <div className="bg-gradient-to-br from-pink-900/50 via-rose-900/50 to-red-900/50 rounded-3xl p-10 border-2 border-pink-500/30 backdrop-blur-xl">
+        <h3 className="text-3xl font-bold mb-8 text-center">🚀 Let's Build Something Epic Together! 🎮</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <a 
+            href="mailto:abhiisingh240@gmail.com" 
+            className="flex items-center gap-4 p-6 bg-pink-600/20 rounded-2xl hover:bg-pink-600/30 transition-all hover:scale-105 border border-pink-500/30"
+          >
+            <div className="p-3 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl">
+              <Mail className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">Email</p>
+              <p className="text-lg font-semibold">abhiisingh240@gmail.com</p>
+            </div>
+          </a>
+          
+          <a 
+            href="tel:+919580335854" 
+            className="flex items-center gap-4 p-6 bg-blue-600/20 rounded-2xl hover:bg-blue-600/30 transition-all hover:scale-105 border border-blue-500/30"
+          >
+            <div className="p-3 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl">
+              <Phone className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">Phone</p>
+              <p className="text-lg font-semibold">+91-9580335854</p>
+            </div>
+          </a>
+          
+          <a 
+            href="https://linkedin.com/in/abhishek-singh0717" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="flex items-center gap-4 p-6 bg-blue-600/20 rounded-2xl hover:bg-blue-600/30 transition-all hover:scale-105 border border-blue-500/30"
+          >
+            <div className="p-3 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl">
+              <Linkedin className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">LinkedIn</p>
+              <p className="text-lg font-semibold">abhishek-singh0717</p>
+            </div>
+          </a>
+          
+          <a 
+            href="https://github.com/Abhisheksingh17cyber" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="flex items-center gap-4 p-6 bg-gray-700/30 rounded-2xl hover:bg-gray-700/50 transition-all hover:scale-105 border border-gray-500/30"
+          >
+            <div className="p-3 bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl">
+              <Github className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">GitHub</p>
+              <p className="text-lg font-semibold">Abhisheksingh17cyber</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+
   if (isLoading) {
     return <LoadingScreen />;
   }
@@ -688,48 +1109,104 @@ const ProfessionalGamePortfolio = () => {
       <ParticleSystem />
       {showGameHUD && <GameHUD />}
       
-      {/* Rest of the component will continue in the next part... */}
-      <div className="pt-32 pb-16 px-4 md:px-8 relative z-10">
-        <div className="max-w-7xl mx-auto">
-          {/* Navigation will be added here */}
-          <div className="text-center mb-12">
-            <h1 className="text-6xl md:text-8xl font-black mb-6 bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
-              {typing}
-              <span className="animate-pulse">|</span>
-            </h1>
-            <p className="text-2xl text-gray-300 mb-8">🎮 Professional Game Developer Portfolio 🚀</p>
-          </div>
-          
-          {/* Level Selection Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {Object.entries(levels).map(([key, level]) => {
-              if (key === 'home') return null;
-              const Icon = level.icon;
-              return (
-                <button
-                  key={key}
-                  onClick={() => navigateToLevel(key)}
-                  className={`group relative ${level.gradient} ${level.color} p-8 rounded-3xl shadow-2xl hover:scale-105 transform transition-all duration-500 border-2 border-white/20 overflow-hidden`}
-                >
-                  <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-all duration-300" />
-                  <div className="relative z-10">
-                    <Icon className="w-20 h-20 mb-6 mx-auto group-hover:scale-110 transition-transform duration-300" />
-                    <h3 className="text-2xl font-bold mb-3">{level.name}</h3>
-                    <p className="text-sm opacity-90 mb-3">{level.description}</p>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs bg-white/20 px-3 py-1 rounded-full">{level.difficulty}</span>
-                      <span className="text-xs bg-yellow-500/30 px-3 py-1 rounded-full">{level.rewards}</span>
-                    </div>
-                    <div className="flex items-center justify-center gap-2">
-                      <Play className="w-5 h-5 animate-bounce" />
-                      <span className="font-semibold">ENTER LEVEL</span>
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
+      {/* Navigation */}
+      <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-30">
+        <div className="bg-black/80 backdrop-blur-sm rounded-xl p-4 flex flex-wrap justify-center items-center border border-purple-500/30 gap-4">
+          <button
+            onClick={() => setCurrentLevel('home')}
+            className="px-4 py-2 bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+          >
+            <Home className="w-5 h-5" />
+            <span className="hidden sm:inline">{levels.home.name}</span>
+          </button>
+          <div className="hidden md:block text-lg font-semibold text-purple-300">
+            {levels[currentLevel].name}
           </div>
         </div>
+      </div>
+      
+      <div className="pt-32 pb-16 px-4 md:px-8 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          {currentLevel === 'home' && renderHome()}
+          {currentLevel === 'about' && renderAbout()}
+          {currentLevel === 'skills' && renderSkills()}
+          {currentLevel === 'projects' && renderProjects()}
+          {currentLevel === 'experience' && renderExperience()}
+          {currentLevel === 'certifications' && renderCertifications()}
+          {currentLevel === 'contact' && renderContact()}
+        </div>
+      </div>
+
+      {/* Modal */}
+      {showModal && modalContent && (
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center p-4 z-50 backdrop-blur-sm" onClick={() => setShowModal(false)}>
+          <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-8 max-w-3xl w-full border-2 border-purple-500 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              {modalContent.title || modalContent.name}
+            </h3>
+            
+            {modalContent.company && <p className="text-2xl text-purple-300 mb-2">{modalContent.company}</p>}
+            {modalContent.org && <p className="text-2xl text-purple-300 mb-2">{modalContent.org}</p>}
+            {modalContent.period && <p className="text-gray-400 mb-4">{modalContent.period}</p>}
+            {modalContent.date && <p className="text-gray-400 mb-4">{modalContent.date}</p>}
+            
+            {modalContent.description && <p className="text-lg text-gray-300 mb-4">{modalContent.description}</p>}
+            
+            {modalContent.tech && (
+              <div className="mb-4">
+                <p className="text-sm text-gray-400 mb-2">Technologies:</p>
+                <div className="flex flex-wrap gap-2">
+                  {modalContent.tech.map((tech, i) => (
+                    <span key={i} className="px-3 py-1 bg-purple-600/30 rounded-full text-sm">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {modalContent.features && (
+              <div className="mb-4">
+                <p className="text-sm text-gray-400 mb-2">Key Features:</p>
+                <div className="space-y-2">
+                  {modalContent.features.map((feature, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <ChevronRight className="w-4 h-4 text-purple-400" />
+                      <span>{feature}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {modalContent.details && (
+              <div className="mb-4">
+                <div className="space-y-2">
+                  {modalContent.details.map((detail, i) => (
+                    <div key={i} className="flex items-start gap-2">
+                      <ChevronRight className="w-4 h-4 mt-1 text-purple-400" />
+                      <span>{detail}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            <button
+              onClick={() => setShowModal(false)}
+              className="mt-6 px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all w-full font-bold text-lg"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Footer */}
+      <div className="max-w-7xl mx-auto mt-12 text-center text-gray-400 pb-8 px-4">
+        <p className="text-lg">© 2025 Abhishek Singh - Professional Gaming Portfolio</p>
+        <p className="text-sm mt-2">🎮 Keep exploring to unlock all achievements! 🏆</p>
+        <p className="text-xs mt-4 text-gray-500">Built with React, Tailwind CSS & Professional Gaming UI</p>
       </div>
     </div>
   );
