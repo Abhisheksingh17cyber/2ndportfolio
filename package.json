@@ -1,0 +1,72 @@
+{
+  "name": "abhishek-gaming-portfolio",
+  "version": "1.0.0",
+  "description": "Interactive Gaming Portfolio for Abhishek Singh - Full Stack Developer, AI Enthusiast & Digital Marketer",
+  "author": "Abhishek Singh <abhiisingh240@gmail.com>",
+  "private": true,
+  "homepage": ".",
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "lucide-react": "^0.294.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "gh-pages": "^6.0.0"
+  },
+  "keywords": [
+    "portfolio",
+    "react",
+    "interactive",
+    "gaming",
+    "full-stack-developer",
+    "ai-enthusiast",
+    "web-developer",
+    "abhishek-singh",
+    "frontend",
+    "backend",
+    "javascript",
+    "tailwindcss"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Abhisheksingh17cyber/2ndportfolio.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Abhisheksingh17cyber/2ndportfolio/issues"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}
