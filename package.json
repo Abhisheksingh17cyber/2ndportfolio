@@ -1,10 +1,10 @@
 {
-  "name": "abhishek-gaming-portfolio",
-  "version": "1.0.0",
-  "description": "Interactive Gaming Portfolio for Abhishek Singh - Full Stack Developer, AI Enthusiast & Digital Marketer",
+  "name": "abhishek-professional-gaming-portfolio",
+  "version": "2.0.0",
+  "description": "🎮 Professional Gaming Portfolio for Abhishek Singh - Full Stack Developer, AI Enthusiast & Digital Marketer with Advanced Gaming UI/UX",
   "author": "Abhishek Singh <abhiisingh240@gmail.com>",
   "private": true,
-  "homepage": ".",
+  "homepage": "https://abhisheksingh17cyber.github.io/2ndportfolio",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -42,21 +42,28 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^6.0.0"
+    "gh-pages": "^6.3.0"
   },
   "keywords": [
     "portfolio",
     "react",
-    "interactive",
     "gaming",
+    "interactive",
+    "professional",
     "full-stack-developer",
     "ai-enthusiast",
     "web-developer",
     "abhishek-singh",
+    "gaming-ui",
+    "portfolio-website",
     "frontend",
     "backend",
     "javascript",
-    "tailwindcss"
+    "tailwindcss",
+    "game-design",
+    "ui-ux",
+    "responsive",
+    "modern"
   ],
   "repository": {
     "type": "git",
