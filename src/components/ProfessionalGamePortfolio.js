@@ -32,6 +32,12 @@ const ProfessionalGamePortfolio = () => {
     achievementsUnlocked: 0
   });
 
+  // Professional metrics for stats display
+  const projectCount = 15;
+  const skillLevel = 92;
+  const experienceYears = 3;
+  const clientSatisfaction = 4.8;
+
   const audioContextRef = useRef(null);
   const timerRef = useRef(null);
   const containerRef = useRef(null);
@@ -595,8 +601,9 @@ const ProfessionalGamePortfolio = () => {
       unlockAchievement('curious');
     }
     
-    addNotification(`Entered ${levels[level].name} (+${totalXP} XP)`, 'info');
-  }, [achievements, combo, levels, playSound, unlockAchievement]);
+    // Removed excessive navigation notification to prevent popup spam
+    // addNotification(`Entered ${levels[level].name} (+${totalXP} XP)`, 'info');
+  }, [achievements, combo, playSound, unlockAchievement]);
 
   // Advanced hover effects
   const handleElementHover = useCallback((elementId, isEntering = true) => {
