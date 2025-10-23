@@ -1592,25 +1592,45 @@ const ProfessionalGamePortfolio = () => {
   return (
     <div ref={containerRef} className="min-h-screen relative overflow-hidden" style={{
       background: `
-        linear-gradient(135deg, #000000 0%, #1a1a1a 25%, #2d2d30 50%, #1a1a1a 75%, #000000 100%),
-        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.05) 0%, transparent 50%),
-        radial-gradient(circle at 40% 60%, rgba(255,255,255,0.03) 0%, transparent 50%)
+        linear-gradient(135deg, #000000 0%, #0a0a0a 10%, #1a1a1a 25%, #2d2d30 50%, #1a1a1a 75%, #0a0a0a 90%, #000000 100%),
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 30%, transparent 60%),
+        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 40%, transparent 70%),
+        radial-gradient(circle at 40% 60%, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 50%, transparent 80%),
+        linear-gradient(45deg, transparent 48%, rgba(255,255,255,0.02) 49%, rgba(255,255,255,0.02) 51%, transparent 52%)
       `,
-      backgroundAttachment: 'fixed'
+      backgroundSize: '100% 100%, 600px 600px, 800px 800px, 400px 400px, 100px 100px',
+      backgroundAttachment: 'fixed',
+      backgroundPosition: '0% 0%, 20% 20%, 80% 80%, 40% 60%, 0% 0%'
     }}>
-      {/* Professional Grid Pattern Overlay */}
-      <div className="absolute inset-0 opacity-10" style={{
+      {/* Ultra-Professional Grid Pattern Overlay */}
+      <div className="absolute inset-0 opacity-15" style={{
         backgroundImage: `
-          linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
+          linear-gradient(rgba(255,255,255,0.12) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px),
+          linear-gradient(45deg, rgba(255,255,255,0.05) 1px, transparent 1px),
+          linear-gradient(-45deg, rgba(255,255,255,0.05) 1px, transparent 1px)
         `,
-        backgroundSize: '50px 50px'
+        backgroundSize: '80px 80px, 80px 80px, 40px 40px, 40px 40px',
+        animation: 'slideBackground 25s linear infinite'
       }} />
       
-      {/* Professional Vignette Effect */}
+      {/* Professional Spotlight Effects */}
       <div className="absolute inset-0" style={{
-        background: 'radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.4) 100%)'
+        background: `
+          radial-gradient(ellipse 800px 600px at 20% 30%, rgba(255,255,255,0.08) 0%, transparent 50%),
+          radial-gradient(ellipse 600px 800px at 80% 70%, rgba(255,255,255,0.06) 0%, transparent 50%),
+          radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.3) 100%)
+        `
+      }} />
+      
+      {/* Elite Corner Accents */}
+      <div className="absolute top-0 left-0 w-96 h-96 opacity-20" style={{
+        background: 'radial-gradient(circle at 0% 0%, rgba(255,255,255,0.2) 0%, transparent 50%)',
+        filter: 'blur(40px)'
+      }} />
+      <div className="absolute bottom-0 right-0 w-96 h-96 opacity-20" style={{
+        background: 'radial-gradient(circle at 100% 100%, rgba(255,255,255,0.15) 0%, transparent 50%)',
+        filter: 'blur(40px)'
       }} />
       
       <ParticleSystem />
