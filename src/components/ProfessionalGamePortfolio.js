@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { Award, Briefcase, Code, Mail, Linkedin, Github, MapPin, Phone, BookOpen, Trophy, Zap, Star, ChevronRight, Home, User, Rocket, Terminal, Database, Cpu, Globe, TrendingUp, Coffee, Shield, GamepadIcon, Heart, Sparkles, Crown, Timer, Compass } from 'lucide-react';
+import { Award, Briefcase, Code, Mail, Linkedin, Github, MapPin, Phone, BookOpen, Trophy, Zap, Star, ChevronRight, Home, User, Rocket, Terminal, Database, Cpu, Globe, TrendingUp, Coffee, Shield, GamepadIcon, Heart, Sparkles, Crown, Timer, Compass, MessageCircle, Target, Calendar } from 'lucide-react';
 
 const ProfessionalGamePortfolio = () => {
   const [currentLevel, setCurrentLevel] = useState('home');
@@ -836,49 +836,133 @@ const ProfessionalGamePortfolio = () => {
 
   // Content rendering functions
   const renderHome = () => (
-    <div className="space-y-8">
-      <div className="relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-gray-800 rounded-3xl p-12 border-2 border-white/20 backdrop-blur-xl shadow-2xl">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
-        <div className="relative z-10 text-center">
-          <div className="inline-block mb-6">
-            <div className="relative">
-              <div className="w-40 h-40 bg-gradient-to-br from-white via-gray-200 to-gray-400 rounded-full flex items-center justify-center text-7xl font-bold text-black shadow-2xl border-4 border-gray-300">
-                AS
-              </div>
-              <div className="absolute -top-2 -right-2 bg-white rounded-full p-3 animate-bounce shadow-lg border-2 border-gray-300">
-                <Star className="w-8 h-8 text-black" />
-              </div>
-              <div className="absolute -bottom-2 -left-2 bg-gray-200 rounded-full p-3 animate-pulse shadow-lg border-2 border-gray-400">
-                <Cpu className="w-8 h-8 text-black" />
-              </div>
+    <div className="space-y-12">
+      {/* Ultra-Elite Hero Section */}
+      <div className="ultra-elite-container text-center">
+        {/* Professional Avatar with Premium Effects */}
+        <div className="inline-block mb-8 relative">
+          <div className="relative">
+            <div className="w-48 h-48 bg-gradient-to-br from-white via-gray-100 to-gray-300 rounded-full flex items-center justify-center text-8xl font-black text-black shadow-2xl border-4 border-white/50 backdrop-blur-sm relative overflow-hidden">
+              {/* Animated shine effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 animate-pulse" 
+                   style={{ animation: 'diamondShine 3s ease-in-out infinite' }} />
+              <span className="relative z-10">AK</span>
+            </div>
+            
+            {/* Floating achievement badges */}
+            <div className="absolute -top-4 -right-4 bg-gradient-to-br from-white to-gray-200 rounded-full p-4 animate-bounce shadow-xl border-2 border-gray-300">
+              <Crown className="w-10 h-10 text-black" />
+            </div>
+            <div className="absolute -bottom-4 -left-4 bg-gradient-to-br from-gray-100 to-gray-300 rounded-full p-4 shadow-xl border-2 border-gray-400" 
+                 style={{ animation: 'professionalFloat 4s ease-in-out infinite' }}>
+              <Zap className="w-10 h-10 text-black" />
+            </div>
+            <div className="absolute top-1/2 -right-6 bg-gradient-to-br from-white to-gray-100 rounded-full p-3 shadow-lg border-2 border-gray-200" 
+                 style={{ animation: 'professionalFloat 3s ease-in-out infinite 1s' }}>
+              <Star className="w-8 h-8 text-black" />
             </div>
           </div>
-          
-          <h1 className="text-6xl font-black mb-4 text-white tracking-wider">
-            {typing}
-            <span className="animate-pulse text-gray-300">|</span>
-          </h1>
-          
-          <div className="flex flex-wrap justify-center gap-3 mb-6">
-            <span className="px-4 py-2 bg-white/10 border-2 border-white/20 rounded-full text-white font-semibold backdrop-blur-sm">FULL STACK DEVELOPER</span>
-            <span className="px-4 py-2 bg-gray-800/60 border-2 border-gray-400/30 rounded-full text-gray-200 font-semibold backdrop-blur-sm">AI SPECIALIST</span>
-            <span className="px-4 py-2 bg-black/60 border-2 border-gray-500/30 rounded-full text-gray-100 font-semibold backdrop-blur-sm">DIGITAL STRATEGIST</span>
+        </div>
+        
+        {/* Ultra-Premium Title */}
+        <h1 className="text-7xl md:text-8xl lg:text-9xl font-black mb-8 ultra-elite-text leading-tight tracking-wide">
+          ABHISHEK KUMAR
+        </h1>
+        
+        {/* Professional Divider */}
+        <div className="flex items-center justify-center mb-8">
+          <div className="h-1 w-20 bg-gradient-to-r from-transparent to-white/50"></div>
+          <div className="mx-6 w-3 h-3 bg-white rounded-full animate-pulse"></div>
+          <div className="h-1 w-20 bg-gradient-to-l from-transparent to-white/50"></div>
+        </div>
+        
+        {/* Elite Subtitle */}
+        <p className="text-3xl md:text-4xl lg:text-5xl font-black mb-12 ultra-elite-text tracking-wider">
+          ELITE FRONTEND ARCHITECT
+        </p>
+        
+        {/* Professional Tags */}
+        <div className="flex flex-wrap justify-center gap-4 mb-12">
+          {[
+            { label: 'FULL STACK ENGINEER', icon: Code, gradient: 'from-white/20 to-gray-200/20' },
+            { label: 'AI INNOVATION SPECIALIST', icon: Sparkles, gradient: 'from-gray-100/20 to-white/20' },
+            { label: 'DIGITAL TRANSFORMATION', icon: TrendingUp, gradient: 'from-gray-200/20 to-gray-100/20' }
+          ].map((tag, index) => {
+            const Icon = tag.icon;
+            return (
+              <div key={index} 
+                   className={`px-6 py-3 bg-gradient-to-r ${tag.gradient} border-2 border-white/30 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-white/30 hover:border-white/50 flex items-center gap-2`}
+                   style={{ animationDelay: `${index * 200}ms` }}>
+                <Icon className="w-5 h-5" />
+                <span className="text-white font-bold text-sm tracking-wider font-mono">{tag.label}</span>
+              </div>
+            );
+          })}
+        </div>
+        
+        {/* Luxury Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12">
+          <button 
+            className="luxury-button"
+            onClick={() => setCurrentLevel('projects')}
+          >
+            <Rocket className="w-6 h-6 mr-2" />
+            EXPLORE ELITE PROJECTS
+          </button>
+          <button 
+            className="luxury-button"
+            onClick={() => setCurrentLevel('contact')}
+          >
+            <MessageCircle className="w-6 h-6 mr-2" />
+            CONNECT PROFESSIONALLY
+          </button>
+        </div>
+        
+        {/* Professional Status */}
+        <div className="flex items-center justify-center gap-6 text-xl font-mono text-gray-200">
+          <div className="flex items-center gap-2">
+            <Trophy className="w-6 h-6 text-white" />
+            <span className="text-white font-bold">LEVEL {playerLevel}</span>
           </div>
-          
-          <p className="text-2xl text-gray-300 mb-2 font-mono">COMPUTER SCIENCE ENGINEERING</p>
-          <div className="flex items-center justify-center gap-3 text-xl font-mono">
-            <Trophy className="w-6 h-6 text-gray-300" />
-            <span className="text-white font-bold">LEVEL {playerLevel} DEVELOPER</span>
-            <Zap className="w-6 h-6 text-gray-300" />
-            <span className="text-white font-bold">{score} XP</span>
+          <div className="w-2 h-2 bg-white/50 rounded-full"></div>
+          <div className="flex items-center gap-2">
+            <Zap className="w-6 h-6 text-white" />
+            <span className="text-white font-bold animated-counter">{score.toLocaleString()}</span>
+            <span className="text-gray-300">XP</span>
           </div>
-          
           {combo > 5 && (
-            <div className="mt-4 text-white font-bold text-xl animate-pulse font-mono">
-              ⚡ {combo}x STREAK ACTIVE ⚡
-            </div>
+            <>
+              <div className="w-2 h-2 bg-white/50 rounded-full"></div>
+              <div className="flex items-center gap-2 animate-pulse">
+                <Star className="w-6 h-6 text-white" />
+                <span className="text-white font-bold">{combo}x STREAK</span>
+              </div>
+            </>
           )}
         </div>
+      </div>
+
+      {/* Professional Achievement Dashboard */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        {[
+          { number: projectCount, label: 'Elite Projects', suffix: '+', icon: Terminal },
+          { number: skillLevel, label: 'Mastery Level', suffix: '%', icon: Target },
+          { number: experienceYears, label: 'Years Excellence', suffix: '+', icon: Calendar },
+          { number: clientSatisfaction, label: 'Client Rating', suffix: '/5', icon: Heart }
+        ].map((stat, index) => {
+          const Icon = stat.icon;
+          return (
+            <div key={index} className="premium-stat-card text-center group">
+              <Icon className="w-8 h-8 mx-auto mb-4 text-white group-hover:animate-pulse" />
+              <div className="text-4xl md:text-5xl font-black animated-counter mb-3">
+                {stat.number}{stat.suffix}
+              </div>
+              <div className="text-sm md:text-base text-gray-300 font-bold uppercase tracking-wider font-mono">
+                {stat.label}
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {/* Level Selection Grid with Advanced Interactions */}
