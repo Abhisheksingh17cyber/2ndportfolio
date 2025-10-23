@@ -19,6 +19,12 @@ const ProfessionalGamePortfolio = () => {
   const [timeSpent, setTimeSpent] = useState(0);
   const [showGameHUD] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [scrollY, setScrollY] = useState(0);
+  const [hoveredElement, setHoveredElement] = useState(null);
+  const [animatedCounters, setAnimatedCounters] = useState({});
+  const [visibleElements, setVisibleElements] = useState(new Set());
+  const [glowEffect, setGlowEffect] = useState({ x: 0, y: 0, active: false });
   const [, setGameStats] = useState({
     sectionsVisited: 0,
     clickCount: 0,
@@ -28,8 +34,10 @@ const ProfessionalGamePortfolio = () => {
 
   const audioContextRef = useRef(null);
   const timerRef = useRef(null);
+  const containerRef = useRef(null);
+  const intersectionObserverRef = useRef(null);
 
-  const fullText = "🎮 Welcome to Abhishek's Professional Digital Universe 🚀";
+  const fullText = "⚡ ABHISHEK SINGH - ELITE PROFESSIONAL PORTFOLIO ⚡";
 
   // Initialize audio context for sound effects
   useEffect(() => {
@@ -58,6 +66,66 @@ const ProfessionalGamePortfolio = () => {
     return () => clearTimeout(loadingTimer);
   }, []);
 
+  // Advanced mouse tracking for interactive effects
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+      setGlowEffect({ x: e.clientX, y: e.clientY, active: true });
+    };
+
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  // Intersection Observer for animations on scroll
+  useEffect(() => {
+    intersectionObserverRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setVisibleElements(prev => new Set([...prev, entry.target.id]));
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '50px' }
+    );
+
+    return () => {
+      if (intersectionObserverRef.current) {
+        intersectionObserverRef.current.disconnect();
+      }
+    };
+  }, []);
+
+  // Animated counter effect
+  const animateCounter = useCallback((targetValue, duration = 2000, key) => {
+    const startTime = Date.now();
+    
+    const updateCounter = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+      const current = Math.floor(easeOutQuart * targetValue);
+      
+      setAnimatedCounters(prev => ({ ...prev, [key]: current }));
+      
+      if (progress < 1) {
+        requestAnimationFrame(updateCounter);
+      }
+    };
+    
+    requestAnimationFrame(updateCounter);
+  }, []);
+
   // Typing effect
   useEffect(() => {
     if (!isLoading) {
@@ -81,12 +149,12 @@ const ProfessionalGamePortfolio = () => {
         id: Date.now() + Math.random(),
         x: Math.random() * 100,
         y: Math.random() * 100,
-        size: Math.random() * 6 + 2,
-        speed: Math.random() * 2 + 0.5,
-        opacity: Math.random() * 0.8 + 0.2,
-        color: ['#8b5cf6', '#ec4899', '#06d6a0', '#ffd60a', '#003566'][Math.floor(Math.random() * 5)]
+        size: Math.random() * 4 + 1,
+        speed: Math.random() * 3 + 1,
+        opacity: Math.random() * 0.6 + 0.2,
+        color: ['#ffffff', '#f3f4f6', '#d1d5db', '#9ca3af'][Math.floor(Math.random() * 4)]
       }]);
-    }, 150);
+    }, 200);
     return () => clearInterval(particleInterval);
   }, []);
 
@@ -141,131 +209,143 @@ const ProfessionalGamePortfolio = () => {
 
   const levels = useMemo(() => ({
     home: { 
-      name: '🏰 Command Nexus', 
+      name: '⚡ COMMAND CENTER', 
       icon: Rocket, 
-      color: 'from-indigo-600 via-purple-600 to-pink-600', 
+      color: 'from-gray-900 via-gray-800 to-black', 
       gradient: 'bg-gradient-to-br',
-      description: 'Central Hub of Operations',
-      difficulty: '⭐',
-      rewards: '+100 XP'
+      description: 'Elite Operations Hub',
+      difficulty: '█████',
+      rewards: '+100 XP',
+      accent: 'border-white/20 hover:border-white/40'
     },
     about: { 
-      name: '👨‍💻 Player Profile', 
+      name: '🎯 PROFILE DATA', 
       icon: User, 
-      color: 'from-blue-600 via-cyan-600 to-teal-600', 
+      color: 'from-black via-gray-900 to-gray-800', 
       gradient: 'bg-gradient-to-tr',
-      description: 'Character Background Story',
-      difficulty: '⭐⭐',
-      rewards: '+150 XP'
+      description: 'Executive Summary',
+      difficulty: '██████',
+      rewards: '+150 XP',
+      accent: 'border-gray-500/30 hover:border-gray-300/50'
     },
     skills: { 
-      name: '⚔️ Skill Tree', 
+      name: '⚔️ TECH ARSENAL', 
       icon: Cpu, 
-      color: 'from-green-600 via-emerald-600 to-teal-600', 
+      color: 'from-gray-800 via-black to-gray-900', 
       gradient: 'bg-gradient-to-bl',
-      description: 'Abilities & Tech Arsenal',
-      difficulty: '⭐⭐⭐',
-      rewards: '+200 XP'
+      description: 'Professional Capabilities',
+      difficulty: '███████',
+      rewards: '+200 XP',
+      accent: 'border-gray-400/20 hover:border-gray-200/40'
     },
     projects: { 
-      name: '🏆 Achievement Vault', 
+      name: '🏆 PROJECT VAULT', 
       icon: Terminal, 
-      color: 'from-orange-600 via-red-600 to-pink-600', 
+      color: 'from-black via-gray-900 to-gray-700', 
       gradient: 'bg-gradient-to-tl',
-      description: 'Legendary Projects Collection',
-      difficulty: '⭐⭐⭐⭐',
-      rewards: '+250 XP'
+      description: 'Elite Portfolio Collection',
+      difficulty: '████████',
+      rewards: '+250 XP',
+      accent: 'border-white/15 hover:border-white/35'
     },
     experience: { 
-      name: '🗺️ Quest Log', 
+      name: '� MISSION LOG', 
       icon: Briefcase, 
-      color: 'from-yellow-600 via-orange-600 to-red-600', 
+      color: 'from-gray-900 via-black to-gray-800', 
       gradient: 'bg-gradient-to-br',
-      description: 'Career Adventures Timeline',
-      difficulty: '⭐⭐⭐',
-      rewards: '+180 XP'
+      description: 'Professional Timeline',
+      difficulty: '███████',
+      rewards: '+180 XP',
+      accent: 'border-gray-600/25 hover:border-gray-400/45'
     },
     certifications: { 
-      name: '👑 Honor Hall', 
+      name: '👑 HONORS HALL', 
       icon: Award, 
-      color: 'from-purple-600 via-pink-600 to-rose-600', 
+      color: 'from-gray-800 via-gray-900 to-black', 
       gradient: 'bg-gradient-to-tr',
-      description: 'Certification Trophies',
-      difficulty: '⭐⭐⭐⭐⭐',
-      rewards: '+300 XP'
+      description: 'Elite Certifications',
+      difficulty: '█████████',
+      rewards: '+300 XP',
+      accent: 'border-gray-300/20 hover:border-white/40'
     },
     contact: { 
-      name: '🌐 Communication Portal', 
+      name: '🌐 CONNECT PORTAL', 
       icon: Globe, 
-      color: 'from-pink-600 via-rose-600 to-red-600', 
+      color: 'from-black via-gray-800 to-gray-900', 
       gradient: 'bg-gradient-to-bl',
-      description: 'Establish Network Connection',
-      difficulty: '⭐⭐',
-      rewards: '+120 XP'
+      description: 'Professional Network',
+      difficulty: '██████',
+      rewards: '+120 XP',
+      accent: 'border-gray-500/20 hover:border-gray-200/40'
     }
   }), []);
 
   const skillCategories = [
     {
-      category: '⚡ Frontend Mastery',
+      category: '⚡ FRONTEND MASTERY',
       icon: Code,
-      color: 'from-blue-500 to-cyan-500',
-      level: 'Expert',
+      color: 'from-gray-900 to-black',
+      level: 'EXPERT',
+      borderColor: 'border-white/20',
       skills: [
-        { name: 'React.js', level: 95, projects: 12, mastery: 'Master' },
-        { name: 'JavaScript ES6+', level: 92, projects: 15, mastery: 'Expert' },
-        { name: 'HTML5 & CSS3', level: 98, projects: 20, mastery: 'Grandmaster' },
-        { name: 'Tailwind CSS', level: 90, projects: 14, mastery: 'Expert' },
-        { name: 'Responsive Design', level: 95, projects: 18, mastery: 'Master' }
+        { name: 'React.js', level: 95, projects: 12, mastery: 'MASTER', color: 'bg-gradient-to-r from-gray-800 to-gray-900' },
+        { name: 'JavaScript ES6+', level: 92, projects: 15, mastery: 'EXPERT', color: 'bg-gradient-to-r from-gray-700 to-gray-800' },
+        { name: 'HTML5 & CSS3', level: 98, projects: 20, mastery: 'GRANDMASTER', color: 'bg-gradient-to-r from-black to-gray-800' },
+        { name: 'Tailwind CSS', level: 90, projects: 14, mastery: 'EXPERT', color: 'bg-gradient-to-r from-gray-800 to-black' },
+        { name: 'Responsive Design', level: 95, projects: 18, mastery: 'MASTER', color: 'bg-gradient-to-r from-gray-900 to-gray-700' }
       ]
     },
     {
-      category: '🚀 Backend Development',
+      category: '🚀 BACKEND DEVELOPMENT',
       icon: Database,
-      color: 'from-green-500 to-emerald-500',
-      level: 'Advanced',
+      color: 'from-black to-gray-800',
+      level: 'ADVANCED',
+      borderColor: 'border-gray-400/25',
       skills: [
-        { name: 'Node.js', level: 85, projects: 10, mastery: 'Advanced' },
-        { name: 'REST APIs', level: 88, projects: 12, mastery: 'Expert' },
-        { name: 'Database Management', level: 82, projects: 8, mastery: 'Advanced' },
-        { name: 'Python', level: 87, projects: 11, mastery: 'Expert' },
-        { name: 'Java', level: 80, projects: 9, mastery: 'Advanced' }
+        { name: 'Node.js', level: 85, projects: 10, mastery: 'ADVANCED', color: 'bg-gradient-to-r from-gray-800 to-black' },
+        { name: 'REST APIs', level: 88, projects: 12, mastery: 'EXPERT', color: 'bg-gradient-to-r from-gray-900 to-gray-800' },
+        { name: 'Database Management', level: 82, projects: 8, mastery: 'ADVANCED', color: 'bg-gradient-to-r from-black to-gray-900' },
+        { name: 'Python', level: 87, projects: 11, mastery: 'EXPERT', color: 'bg-gradient-to-r from-gray-700 to-gray-900' },
+        { name: 'Java', level: 80, projects: 9, mastery: 'ADVANCED', color: 'bg-gradient-to-r from-gray-800 to-gray-700' }
       ]
     },
     {
-      category: '🤖 AI & Machine Learning',
+      category: '🤖 AI & MACHINE LEARNING',
       icon: Cpu,
-      color: 'from-purple-500 to-pink-500',
-      level: 'Expert',
+      color: 'from-gray-800 to-gray-900',
+      level: 'EXPERT',
+      borderColor: 'border-gray-300/30',
       skills: [
-        { name: 'Generative AI', level: 90, projects: 6, mastery: 'Expert' },
-        { name: 'Prompt Engineering', level: 95, projects: 8, mastery: 'Master' },
-        { name: 'AI Integration', level: 88, projects: 7, mastery: 'Expert' },
-        { name: 'Model Context Protocol', level: 85, projects: 4, mastery: 'Advanced' }
+        { name: 'Generative AI', level: 90, projects: 6, mastery: 'EXPERT', color: 'bg-gradient-to-r from-gray-900 to-black' },
+        { name: 'Prompt Engineering', level: 95, projects: 8, mastery: 'MASTER', color: 'bg-gradient-to-r from-black to-gray-800' },
+        { name: 'AI Integration', level: 88, projects: 7, mastery: 'EXPERT', color: 'bg-gradient-to-r from-gray-800 to-gray-900' },
+        { name: 'Model Context Protocol', level: 85, projects: 4, mastery: 'ADVANCED', color: 'bg-gradient-to-r from-gray-700 to-black' }
       ]
     },
     {
-      category: '📈 Digital Marketing & SEO',
+      category: '📈 DIGITAL MARKETING & SEO',
       icon: TrendingUp,
-      color: 'from-orange-500 to-red-500',
-      level: 'Expert',
+      color: 'from-gray-900 to-gray-700',
+      level: 'EXPERT',
+      borderColor: 'border-gray-500/25',
       skills: [
-        { name: 'SEO Optimization', level: 92, projects: 15, mastery: 'Expert' },
-        { name: 'Content Strategy', level: 88, projects: 12, mastery: 'Expert' },
-        { name: 'AI-Powered Ads', level: 85, projects: 10, mastery: 'Advanced' },
-        { name: 'SEM', level: 83, projects: 11, mastery: 'Advanced' }
+        { name: 'SEO Optimization', level: 92, projects: 15, mastery: 'EXPERT', color: 'bg-gradient-to-r from-gray-800 to-gray-900' },
+        { name: 'Content Strategy', level: 88, projects: 12, mastery: 'EXPERT', color: 'bg-gradient-to-r from-black to-gray-800' },
+        { name: 'AI-Powered Ads', level: 85, projects: 10, mastery: 'ADVANCED', color: 'bg-gradient-to-r from-gray-900 to-gray-700' },
+        { name: 'SEM', level: 83, projects: 11, mastery: 'ADVANCED', color: 'bg-gradient-to-r from-gray-700 to-gray-900' }
       ]
     },
     {
-      category: '🛡️ Security & DevOps',
+      category: '🛡️ SECURITY & DEVOPS',
       icon: Shield,
-      color: 'from-red-500 to-rose-500',
-      level: 'Advanced',
+      color: 'from-black to-gray-900',
+      level: 'ADVANCED',
+      borderColor: 'border-white/15',
       skills: [
-        { name: 'Cybersecurity', level: 82, projects: 6, mastery: 'Advanced' },
-        { name: 'Git & GitHub', level: 96, projects: 25, mastery: 'Grandmaster' },
-        { name: 'Google Cloud', level: 78, projects: 8, mastery: 'Advanced' },
-        { name: 'Network Security', level: 75, projects: 5, mastery: 'Intermediate' }
+        { name: 'Cybersecurity', level: 82, projects: 6, mastery: 'ADVANCED', color: 'bg-gradient-to-r from-gray-800 to-black' },
+        { name: 'Git & GitHub', level: 96, projects: 25, mastery: 'GRANDMASTER', color: 'bg-gradient-to-r from-gray-900 to-gray-800' },
+        { name: 'Google Cloud', level: 78, projects: 8, mastery: 'ADVANCED', color: 'bg-gradient-to-r from-black to-gray-700' },
+        { name: 'Network Security', level: 75, projects: 5, mastery: 'INTERMEDIATE', color: 'bg-gradient-to-r from-gray-700 to-gray-800' }
       ]
     }
   ];
@@ -518,6 +598,14 @@ const ProfessionalGamePortfolio = () => {
     addNotification(`Entered ${levels[level].name} (+${totalXP} XP)`, 'info');
   }, [achievements, combo, levels, playSound, unlockAchievement]);
 
+  // Advanced hover effects
+  const handleElementHover = useCallback((elementId, isEntering = true) => {
+    setHoveredElement(isEntering ? elementId : null);
+    if (isEntering) {
+      playSound(220, 100, 'sine');
+    }
+  }, [playSound]);
+
   const openModal = useCallback((content) => {
     setModalContent(content);
     setShowModal(true);
@@ -537,30 +625,55 @@ const ProfessionalGamePortfolio = () => {
     }
   }, [achievements, score, isLoading, unlockAchievement]);
 
+  // Initialize intersection observer for skill animations
+  useEffect(() => {
+    if (!isLoading && containerRef.current) {
+      const elements = containerRef.current.querySelectorAll('[id]');
+      elements.forEach(element => {
+        if (intersectionObserverRef.current) {
+          intersectionObserverRef.current.observe(element);
+        }
+      });
+    }
+  }, [isLoading, currentLevel]);
+
+  // Trigger counter animations for visible elements
+  useEffect(() => {
+    visibleElements.forEach(elementId => {
+      if (elementId.startsWith('skill-') && !animatedCounters[elementId]) {
+        const skillElement = document.getElementById(elementId);
+        if (skillElement) {
+          // Extract skill level from element or use default
+          animateCounter(85, 2000, elementId);
+        }
+      }
+    });
+  }, [visibleElements, animatedCounters, animateCounter]);
+
   // Loading Screen Component
   const LoadingScreen = () => (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-black">
       <div className="text-center">
         <div className="relative mb-8">
-          <div className="w-40 h-40 border-8 border-purple-500/30 rounded-full animate-spin">
-            <div className="w-32 h-32 border-8 border-pink-500/50 rounded-full animate-spin absolute top-2 left-2">
-              <div className="w-24 h-24 border-8 border-cyan-500/70 rounded-full animate-spin absolute top-2 left-2">
-                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center absolute top-2 left-2">
-                  <GamepadIcon className="w-8 h-8 text-white animate-pulse" />
+          <div className="w-40 h-40 border-8 border-white/10 rounded-full animate-spin">
+            <div className="w-32 h-32 border-8 border-gray-400/20 rounded-full animate-spin absolute top-2 left-2" style={{animationDirection: 'reverse'}}>
+              <div className="w-24 h-24 border-8 border-white/30 rounded-full animate-spin absolute top-2 left-2">
+                <div className="w-16 h-16 bg-gradient-to-r from-white to-gray-300 rounded-full flex items-center justify-center absolute top-2 left-2">
+                  <GamepadIcon className="w-8 h-8 text-black animate-pulse" />
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <h1 className="text-4xl font-black bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent mb-4">
-          🎮 PROFESSIONAL GAME PORTFOLIO 🚀
+        <h1 className="text-4xl font-black text-white mb-4 tracking-wider">
+          ⚡ ELITE PORTFOLIO SYSTEM ⚡
         </h1>
-        <p className="text-xl text-gray-300 mb-6">Initializing Digital Universe...</p>
-        <div className="w-80 h-4 bg-gray-700 rounded-full overflow-hidden mx-auto">
-          <div className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-300 animate-pulse" 
+        <p className="text-xl text-gray-300 mb-6 font-mono">INITIALIZING PROFESSIONAL INTERFACE...</p>
+        <div className="w-80 h-4 bg-gray-800 rounded-full overflow-hidden mx-auto border border-gray-600">
+          <div className="h-full bg-gradient-to-r from-white via-gray-300 to-white rounded-full transition-all duration-300 animate-pulse" 
                style={{width: '100%'}}></div>
         </div>
-        <p className="text-sm text-gray-400 mt-4 animate-pulse">Loading epic experience...</p>
+        <p className="text-sm text-gray-500 mt-4 animate-pulse font-mono">LOADING EXECUTIVE EXPERIENCE...</p>
       </div>
     </div>
   );
@@ -570,25 +683,25 @@ const ProfessionalGamePortfolio = () => {
     <div className="fixed top-4 left-4 right-4 z-40 pointer-events-none">
       <div className="flex justify-between items-start">
         {/* Left HUD */}
-        <div className="bg-black/80 backdrop-blur-sm rounded-xl p-4 border border-purple-500/30 pointer-events-auto">
+        <div className="bg-black/90 backdrop-blur-sm rounded-xl p-4 border-2 border-white/20 pointer-events-auto shadow-2xl">
           <div className="flex items-center gap-4 mb-3">
-            <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">
+            <div className="w-12 h-12 bg-gradient-to-r from-white to-gray-300 rounded-full flex items-center justify-center text-black font-bold text-lg border-2 border-gray-400">
               AS
             </div>
             <div>
-              <h3 className="text-white font-bold">Level {playerLevel} Developer</h3>
-              <p className="text-gray-400 text-sm">Abhishek Singh</p>
+              <h3 className="text-white font-bold">LEVEL {playerLevel} DEVELOPER</h3>
+              <p className="text-gray-300 text-sm font-mono">ABHISHEK SINGH</p>
             </div>
           </div>
           
           {/* Health Bar */}
           <div className="mb-2">
             <div className="flex items-center gap-2 mb-1">
-              <Heart className="w-4 h-4 text-red-400" />
-              <span className="text-sm text-gray-300">Health</span>
+              <Heart className="w-4 h-4 text-gray-300" />
+              <span className="text-sm text-gray-200 font-mono">SYSTEM</span>
             </div>
-            <div className="w-32 h-2 bg-gray-700 rounded-full">
-              <div className="h-full bg-gradient-to-r from-red-500 to-red-400 rounded-full transition-all duration-300" 
+            <div className="w-32 h-2 bg-gray-800 rounded-full border border-gray-600">
+              <div className="h-full bg-gradient-to-r from-white to-gray-300 rounded-full transition-all duration-300" 
                    style={{width: `${health}%`}}></div>
             </div>
           </div>
@@ -596,11 +709,11 @@ const ProfessionalGamePortfolio = () => {
           {/* Energy Bar */}
           <div className="mb-2">
             <div className="flex items-center gap-2 mb-1">
-              <Zap className="w-4 h-4 text-blue-400" />
-              <span className="text-sm text-gray-300">Energy</span>
+              <Zap className="w-4 h-4 text-gray-300" />
+              <span className="text-sm text-gray-200 font-mono">ENERGY</span>
             </div>
-            <div className="w-32 h-2 bg-gray-700 rounded-full">
-              <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full transition-all duration-300" 
+            <div className="w-32 h-2 bg-gray-800 rounded-full border border-gray-600">
+              <div className="h-full bg-gradient-to-r from-gray-300 to-white rounded-full transition-all duration-300" 
                    style={{width: `${energy}%`}}></div>
             </div>
           </div>
@@ -608,37 +721,37 @@ const ProfessionalGamePortfolio = () => {
           {/* XP Bar */}
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <Star className="w-4 h-4 text-yellow-400" />
-              <span className="text-sm text-gray-300">Experience</span>
+              <Star className="w-4 h-4 text-gray-300" />
+              <span className="text-sm text-gray-200 font-mono">EXPERIENCE</span>
             </div>
-            <div className="w-32 h-2 bg-gray-700 rounded-full">
-              <div className="h-full bg-gradient-to-r from-yellow-500 to-orange-400 rounded-full transition-all duration-300" 
+            <div className="w-32 h-2 bg-gray-800 rounded-full border border-gray-600">
+              <div className="h-full bg-gradient-to-r from-gray-400 to-white rounded-full transition-all duration-300" 
                    style={{width: `${(exp / 500) * 100}%`}}></div>
             </div>
-            <p className="text-xs text-gray-400 mt-1">{exp}/500 XP</p>
+            <p className="text-xs text-gray-400 mt-1 font-mono">{exp}/500 XP</p>
           </div>
         </div>
         
         {/* Right HUD */}
-        <div className="bg-black/80 backdrop-blur-sm rounded-xl p-4 border border-purple-500/30 pointer-events-auto">
+        <div className="bg-black/90 backdrop-blur-sm rounded-xl p-4 border-2 border-white/20 pointer-events-auto shadow-2xl">
           <div className="text-right mb-3">
             <div className="flex items-center gap-2 justify-end mb-2">
-              <Trophy className="w-5 h-5 text-yellow-400" />
-              <span className="text-yellow-400 font-bold">{score.toLocaleString()} XP</span>
+              <Trophy className="w-5 h-5 text-gray-300" />
+              <span className="text-white font-bold font-mono">{score.toLocaleString()} XP</span>
             </div>
             <div className="flex items-center gap-2 justify-end mb-2">
-              <Award className="w-5 h-5 text-purple-400" />
-              <span className="text-purple-400 font-bold">{achievements.length}/7</span>
+              <Award className="w-5 h-5 text-gray-300" />
+              <span className="text-white font-bold font-mono">{achievements.length}/7</span>
             </div>
             <div className="flex items-center gap-2 justify-end mb-2">
-              <Timer className="w-4 h-4 text-cyan-400" />
-              <span className="text-cyan-400 text-sm">{Math.floor(timeSpent / 60)}:{(timeSpent % 60).toString().padStart(2, '0')}</span>
+              <Timer className="w-4 h-4 text-gray-300" />
+              <span className="text-gray-200 text-sm font-mono">{Math.floor(timeSpent / 60)}:{(timeSpent % 60).toString().padStart(2, '0')}</span>
             </div>
           </div>
           
           {combo > 0 && (
-            <div className="text-orange-400 font-bold text-lg animate-pulse">
-              🔥 {combo}x COMBO!
+            <div className="text-white font-bold text-lg animate-pulse font-mono">
+              ⚡ {combo}x COMBO!
             </div>
           )}
         </div>
@@ -646,137 +759,329 @@ const ProfessionalGamePortfolio = () => {
       
       {/* Quest Log */}
       <div className="mt-4 max-w-md mx-auto">
-        <div className="bg-black/80 backdrop-blur-sm rounded-xl p-3 border border-green-500/30 pointer-events-auto">
+        <div className="bg-black/90 backdrop-blur-sm rounded-xl p-3 border-2 border-gray-400/30 pointer-events-auto shadow-2xl">
           <div className="flex items-center gap-2 mb-2">
-            <Compass className="w-4 h-4 text-green-400" />
-            <span className="text-green-400 font-semibold text-sm">Current Quest</span>
+            <Compass className="w-4 h-4 text-gray-300" />
+            <span className="text-gray-200 font-semibold text-sm font-mono">CURRENT MISSION</span>
           </div>
-          <p className="text-white text-sm">{currentQuest}</p>
+          <p className="text-white text-sm font-mono">{currentQuest}</p>
         </div>
       </div>
     </div>
   );
 
-  // Enhanced particle rendering
+  // Enhanced particle rendering with interactive effects
   const ParticleSystem = () => (
     <div className="fixed inset-0 pointer-events-none overflow-hidden">
-      {particles.map(particle => (
+      {/* Dynamic glow effect following mouse */}
+      {glowEffect.active && (
         <div
-          key={particle.id}
-          className="absolute rounded-full animate-pulse"
+          className="absolute pointer-events-none transition-all duration-300 ease-out"
           style={{
-            left: `${particle.x}%`,
-            top: `${particle.y}%`,
-            width: `${particle.size}px`,
-            height: `${particle.size}px`,
-            backgroundColor: particle.color,
-            opacity: particle.opacity,
-            animation: `float ${particle.speed}s ease-in-out infinite`
+            left: glowEffect.x - 100,
+            top: glowEffect.y - 100,
+            width: '200px',
+            height: '200px',
+            background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+            borderRadius: '50%',
+            filter: 'blur(20px)',
           }}
         />
-      ))}
+      )}
+      
+      {/* Interactive particles */}
+      {particles.map(particle => {
+        const distanceFromMouse = Math.sqrt(
+          Math.pow((mousePosition.x / window.innerWidth * 100) - particle.x, 2) +
+          Math.pow((mousePosition.y / window.innerHeight * 100) - particle.y, 2)
+        );
+        const isNearMouse = distanceFromMouse < 15;
+        
+        return (
+          <div
+            key={particle.id}
+            className="absolute transition-all duration-300 ease-out"
+            style={{
+              left: `${particle.x}%`,
+              top: `${particle.y}%`,
+              width: `${particle.size + (isNearMouse ? 3 : 0)}px`,
+              height: `${particle.size + (isNearMouse ? 3 : 0)}px`,
+              backgroundColor: isNearMouse ? '#ffffff' : ['#ffffff', '#f3f4f6', '#d1d5db', '#9ca3af'][Math.floor(Math.random() * 4)],
+              opacity: (particle.opacity * 0.4) + (isNearMouse ? 0.3 : 0),
+              borderRadius: '50%',
+              boxShadow: isNearMouse ? '0 0 20px rgba(255,255,255,0.5)' : 'none',
+              animation: `float ${particle.speed}s ease-in-out infinite`,
+              transform: `scale(${isNearMouse ? 1.2 : 1}) translate(${isNearMouse ? (mousePosition.x - particle.x * window.innerWidth / 100) * 0.1 : 0}px, ${isNearMouse ? (mousePosition.y - particle.y * window.innerHeight / 100) * 0.1 : 0}px)`
+            }}
+          />
+        );
+      })}
+      
+      {/* Parallax background elements */}
+      <div 
+        className="absolute inset-0 opacity-5"
+        style={{
+          backgroundImage: `
+            radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 1px, transparent 1px),
+            radial-gradient(circle at 80% 70%, rgba(255,255,255,0.1) 1px, transparent 1px),
+            radial-gradient(circle at 40% 80%, rgba(255,255,255,0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: '200px 200px, 300px 300px, 250px 250px',
+          transform: `translateY(${scrollY * 0.1}px)`,
+          transition: 'transform 0.1s ease-out'
+        }}
+      />
     </div>
   );
 
   // Content rendering functions
   const renderHome = () => (
     <div className="space-y-8">
-      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-900/40 via-purple-900/40 to-pink-900/40 rounded-3xl p-12 border-2 border-purple-500/30 backdrop-blur-xl">
+      <div className="relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-gray-800 rounded-3xl p-12 border-2 border-white/20 backdrop-blur-xl shadow-2xl">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
         <div className="relative z-10 text-center">
           <div className="inline-block mb-6">
             <div className="relative">
-              <div className="w-40 h-40 bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 rounded-full flex items-center justify-center text-7xl font-bold text-white shadow-2xl">
+              <div className="w-40 h-40 bg-gradient-to-br from-white via-gray-200 to-gray-400 rounded-full flex items-center justify-center text-7xl font-bold text-black shadow-2xl border-4 border-gray-300">
                 AS
               </div>
-              <div className="absolute -top-2 -right-2 bg-yellow-400 rounded-full p-3 animate-bounce">
-                <Star className="w-8 h-8 text-yellow-900" />
+              <div className="absolute -top-2 -right-2 bg-white rounded-full p-3 animate-bounce shadow-lg border-2 border-gray-300">
+                <Star className="w-8 h-8 text-black" />
               </div>
-              <div className="absolute -bottom-2 -left-2 bg-green-400 rounded-full p-3 animate-pulse">
-                <Cpu className="w-8 h-8 text-green-900" />
+              <div className="absolute -bottom-2 -left-2 bg-gray-200 rounded-full p-3 animate-pulse shadow-lg border-2 border-gray-400">
+                <Cpu className="w-8 h-8 text-black" />
               </div>
             </div>
           </div>
           
-          <h1 className="text-6xl font-black mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent">
+          <h1 className="text-6xl font-black mb-4 text-white tracking-wider">
             {typing}
-            <span className="animate-pulse">|</span>
+            <span className="animate-pulse text-gray-300">|</span>
           </h1>
           
           <div className="flex flex-wrap justify-center gap-3 mb-6">
-            <span className="px-4 py-2 bg-blue-500/20 border border-blue-400 rounded-full text-blue-300 font-semibold">Full Stack Developer</span>
-            <span className="px-4 py-2 bg-purple-500/20 border border-purple-400 rounded-full text-purple-300 font-semibold">AI Enthusiast</span>
-            <span className="px-4 py-2 bg-pink-500/20 border border-pink-400 rounded-full text-pink-300 font-semibold">Digital Marketer</span>
+            <span className="px-4 py-2 bg-white/10 border-2 border-white/20 rounded-full text-white font-semibold backdrop-blur-sm">FULL STACK DEVELOPER</span>
+            <span className="px-4 py-2 bg-gray-800/60 border-2 border-gray-400/30 rounded-full text-gray-200 font-semibold backdrop-blur-sm">AI SPECIALIST</span>
+            <span className="px-4 py-2 bg-black/60 border-2 border-gray-500/30 rounded-full text-gray-100 font-semibold backdrop-blur-sm">DIGITAL STRATEGIST</span>
           </div>
           
-          <p className="text-2xl text-gray-300 mb-2">Computer Science Engineering Student</p>
-          <div className="flex items-center justify-center gap-3 text-xl">
-            <Trophy className="w-6 h-6 text-yellow-400" />
-            <span className="text-yellow-400 font-bold">Level {playerLevel} Developer</span>
-            <Zap className="w-6 h-6 text-purple-400" />
-            <span className="text-purple-400 font-bold">{score} XP</span>
+          <p className="text-2xl text-gray-300 mb-2 font-mono">COMPUTER SCIENCE ENGINEERING</p>
+          <div className="flex items-center justify-center gap-3 text-xl font-mono">
+            <Trophy className="w-6 h-6 text-gray-300" />
+            <span className="text-white font-bold">LEVEL {playerLevel} DEVELOPER</span>
+            <Zap className="w-6 h-6 text-gray-300" />
+            <span className="text-white font-bold">{score} XP</span>
           </div>
           
           {combo > 5 && (
-            <div className="mt-4 text-orange-400 font-bold text-xl animate-pulse">
-              🔥 {combo}x COMBO STREAK! 🔥
+            <div className="mt-4 text-white font-bold text-xl animate-pulse font-mono">
+              ⚡ {combo}x STREAK ACTIVE ⚡
             </div>
           )}
         </div>
       </div>
 
-      {/* Level Selection Grid */}
+      {/* Level Selection Grid with Advanced Interactions */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {Object.entries(levels).map(([key, level]) => {
+        {Object.entries(levels).map(([key, level], index) => {
           if (key === 'home') return null;
           const Icon = level.icon;
+          const isHovered = hoveredElement === key;
+          const animationDelay = index * 100;
+          
           return (
             <button
               key={key}
               onClick={() => navigateToLevel(key)}
-              className={`group relative ${level.gradient} ${level.color} p-8 rounded-2xl shadow-2xl hover:scale-105 transform transition-all duration-300 border-2 border-white/20 overflow-hidden`}
+              onMouseEnter={() => handleElementHover(key, true)}
+              onMouseLeave={() => handleElementHover(key, false)}
+              className={`group relative ${level.gradient} ${level.color} p-8 rounded-2xl shadow-2xl transform transition-all duration-500 border-2 ${level.accent} overflow-hidden`}
+              style={{
+                animationDelay: `${animationDelay}ms`,
+                transform: `
+                  scale(${isHovered ? 1.08 : 1}) 
+                  rotateY(${isHovered ? '5deg' : '0deg'}) 
+                  translateZ(${isHovered ? '20px' : '0px'})
+                `,
+                transformStyle: 'preserve-3d',
+                perspective: '1000px'
+              }}
             >
-              <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-all duration-300" />
+              {/* Animated background glow */}
+              <div 
+                className={`absolute inset-0 transition-all duration-500 ${isHovered ? 'bg-white/10' : 'bg-white/0'}`}
+                style={{
+                  background: isHovered 
+                    ? `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,0.2), transparent)`
+                    : 'transparent'
+                }}
+              />
+              
+              {/* Floating particles on hover */}
+              {isHovered && (
+                <>
+                  {Array.from({length: 6}).map((_, i) => (
+                    <div
+                      key={i}
+                      className="absolute w-1 h-1 bg-white rounded-full opacity-60"
+                      style={{
+                        left: `${20 + i * 15}%`,
+                        top: `${10 + (i % 2) * 20}%`,
+                        animation: `float ${1 + i * 0.2}s ease-in-out infinite`,
+                        animationDelay: `${i * 0.1}s`
+                      }}
+                    />
+                  ))}
+                </>
+              )}
+              
               <div className="relative z-10">
-                <Icon className="w-16 h-16 mb-4 mx-auto group-hover:scale-110 transition-transform" />
-                <h3 className="text-2xl font-bold mb-2">{level.name}</h3>
-                <p className="text-sm opacity-90 mb-3">{level.description}</p>
+                <div className="relative mb-4">
+                  <Icon 
+                    className={`w-16 h-16 mx-auto transition-all duration-500 text-white ${isHovered ? 'animate-pulse' : ''}`}
+                    style={{
+                      transform: `scale(${isHovered ? 1.2 : 1}) rotateY(${isHovered ? '15deg' : '0deg'})`,
+                      filter: isHovered ? 'drop-shadow(0 0 20px rgba(255,255,255,0.5))' : 'none'
+                    }}
+                  />
+                  {/* Icon glow effect */}
+                  {isHovered && (
+                    <div className="absolute inset-0 bg-white/20 rounded-full animate-ping" />
+                  )}
+                </div>
+                
+                <h3 className={`text-2xl font-bold mb-2 text-white font-mono transition-all duration-300 ${isHovered ? 'text-shadow-glow' : ''}`}>
+                  {level.name}
+                </h3>
+                <p className="text-sm opacity-90 mb-3 text-gray-200 transition-opacity duration-300">
+                  {level.description}
+                </p>
+                
+                {/* Interactive progress bar */}
+                <div className="w-full bg-gray-800/50 rounded-full h-2 mb-3 overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-white to-gray-300 rounded-full transition-all duration-1000 ease-out"
+                    style={{ width: isHovered ? '100%' : '0%' }}
+                  />
+                </div>
+                
                 <div className="flex items-center justify-center gap-2">
-                  <span className="text-xs bg-white/20 px-3 py-1 rounded-full">{level.rewards}</span>
-                  <ChevronRight className="w-5 h-5 animate-bounce" />
+                  <span className={`text-xs bg-white/10 px-3 py-1 rounded-full text-gray-200 font-mono transition-all duration-300 ${isHovered ? 'bg-white/20 scale-105' : ''}`}>
+                    {level.rewards}
+                  </span>
+                  <ChevronRight 
+                    className={`w-5 h-5 text-white transition-all duration-300 ${isHovered ? 'translate-x-2 scale-125' : 'animate-bounce'}`} 
+                  />
+                </div>
+                <div className={`mt-2 text-xs text-gray-300 font-mono transition-all duration-300 ${isHovered ? 'text-white' : ''}`}>
+                  {level.difficulty}
                 </div>
               </div>
+              
+              {/* Border animation */}
+              <div className={`absolute inset-0 rounded-2xl transition-all duration-300 ${isHovered ? 'shadow-2xl border-2 border-white/40' : ''}`} />
             </button>
           );
         })}
       </div>
 
-      {/* Performance Dashboard */}
-      <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-xl rounded-3xl p-8 border-2 border-purple-500/30">
-        <h3 className="text-3xl font-bold mb-6 flex items-center gap-3">
-          <Trophy className="w-8 h-8 text-yellow-400" />
-          Performance Dashboard
+      {/* Performance Dashboard with Animated Counters */}
+      <div className="bg-gradient-to-br from-gray-900/90 to-black/90 backdrop-blur-xl rounded-3xl p-8 border-2 border-white/20 shadow-2xl relative overflow-hidden">
+        {/* Animated background pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `
+              linear-gradient(45deg, transparent 48%, rgba(255,255,255,0.1) 49%, rgba(255,255,255,0.1) 51%, transparent 52%),
+              linear-gradient(-45deg, transparent 48%, rgba(255,255,255,0.05) 49%, rgba(255,255,255,0.05) 51%, transparent 52%)
+            `,
+            backgroundSize: '20px 20px',
+            animation: 'slideBackground 20s linear infinite'
+          }} />
+        </div>
+        
+        <h3 className="text-3xl font-bold mb-6 flex items-center gap-3 text-white font-mono relative z-10">
+          <Trophy className="w-8 h-8 text-gray-300 animate-pulse" />
+          PERFORMANCE METRICS
         </h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div className="bg-gradient-to-br from-blue-600/30 to-cyan-600/30 rounded-xl p-6 text-center border border-blue-500/30 hover:scale-105 transition-transform">
-            <Award className="w-8 h-8 mx-auto mb-2 text-blue-400" />
-            <div className="text-4xl font-bold text-blue-300">{certifications.length}</div>
-            <div className="text-sm text-gray-300">Certifications</div>
-          </div>
-          <div className="bg-gradient-to-br from-green-600/30 to-emerald-600/30 rounded-xl p-6 text-center border border-green-500/30 hover:scale-105 transition-transform">
-            <Terminal className="w-8 h-8 mx-auto mb-2 text-green-400" />
-            <div className="text-4xl font-bold text-green-300">{projects.length}</div>
-            <div className="text-sm text-gray-300">Projects Built</div>
-          </div>
-          <div className="bg-gradient-to-br from-purple-600/30 to-pink-600/30 rounded-xl p-6 text-center border border-purple-500/30 hover:scale-105 transition-transform">
-            <Code className="w-8 h-8 mx-auto mb-2 text-purple-400" />
-            <div className="text-4xl font-bold text-purple-300">{skillCategories.reduce((acc, cat) => acc + cat.skills.length, 0)}</div>
-            <div className="text-sm text-gray-300">Tech Skills</div>
-          </div>
-          <div className="bg-gradient-to-br from-orange-600/30 to-red-600/30 rounded-xl p-6 text-center border border-orange-500/30 hover:scale-105 transition-transform">
-            <Briefcase className="w-8 h-8 mx-auto mb-2 text-orange-400" />
-            <div className="text-4xl font-bold text-orange-300">{experiences.length}</div>
-            <div className="text-sm text-gray-300">Experiences</div>
-          </div>
+        
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 relative z-10">
+          {[
+            { icon: Award, count: certifications.length, label: 'CERTIFICATIONS', key: 'certs' },
+            { icon: Terminal, count: projects.length, label: 'PROJECTS', key: 'projects' },
+            { icon: Code, count: skillCategories.reduce((acc, cat) => acc + cat.skills.length, 0), label: 'TECH SKILLS', key: 'skills' },
+            { icon: Briefcase, count: experiences.length, label: 'EXPERIENCES', key: 'exp' }
+          ].map((item, index) => {
+            const Icon = item.icon;
+            const displayCount = animatedCounters[item.key] ?? 0;
+            const isHovered = hoveredElement === `metric-${item.key}`;
+            
+            return (
+              <div 
+                key={item.key}
+                className={`bg-gradient-to-br from-gray-800/50 to-black/50 rounded-xl p-6 text-center border-2 transition-all duration-500 cursor-pointer relative overflow-hidden ${
+                  isHovered 
+                    ? 'border-white/40 shadow-2xl transform scale-110' 
+                    : 'border-gray-400/20 hover:scale-105'
+                }`}
+                onMouseEnter={() => {
+                  handleElementHover(`metric-${item.key}`, true);
+                  animateCounter(item.count, 1500, item.key);
+                }}
+                onMouseLeave={() => handleElementHover(`metric-${item.key}`, false)}
+                style={{ animationDelay: `${index * 200}ms` }}
+              >
+                {/* Animated background on hover */}
+                {isHovered && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/5 via-white/10 to-white/5 animate-pulse" />
+                )}
+                
+                {/* Floating particles on hover */}
+                {isHovered && Array.from({length: 4}).map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute w-1 h-1 bg-white rounded-full opacity-60"
+                    style={{
+                      left: `${10 + i * 25}%`,
+                      top: `${10 + (i % 2) * 20}%`,
+                      animation: `float ${1.5 + i * 0.3}s ease-in-out infinite`,
+                      animationDelay: `${i * 0.2}s`
+                    }}
+                  />
+                ))}
+                
+                <Icon 
+                  className={`w-8 h-8 mx-auto mb-2 text-gray-300 transition-all duration-500 ${
+                    isHovered ? 'animate-bounce text-white scale-125' : ''
+                  }`}
+                  style={{
+                    filter: isHovered ? 'drop-shadow(0 0 15px rgba(255,255,255,0.6))' : 'none'
+                  }}
+                />
+                
+                {/* Animated counter */}
+                <div className={`text-4xl font-bold font-mono transition-all duration-300 ${
+                  isHovered ? 'text-white scale-110' : 'text-white'
+                }`}>
+                  {displayCount}
+                  {isHovered && <span className="text-gray-300">+</span>}
+                </div>
+                
+                {/* Progress bar */}
+                <div className="w-full bg-gray-700/50 rounded-full h-1 mb-2 overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-white to-gray-300 rounded-full transition-all duration-1000 ease-out"
+                    style={{ width: isHovered ? '100%' : `${(displayCount / item.count) * 100}%` }}
+                  />
+                </div>
+                
+                <div className={`text-sm font-mono transition-all duration-300 ${
+                  isHovered ? 'text-white font-bold' : 'text-gray-300'
+                }`}>
+                  {item.label}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
@@ -784,49 +1089,49 @@ const ProfessionalGamePortfolio = () => {
 
   const renderAbout = () => (
     <div className="space-y-6">
-      <h2 className="text-5xl font-black mb-8 flex items-center gap-4 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-        <User className="w-12 h-12 text-blue-400" />
-        Player Profile
+      <h2 className="text-5xl font-black mb-8 flex items-center gap-4 text-white font-mono">
+        <User className="w-12 h-12 text-gray-300" />
+        PROFILE DATA
       </h2>
       
-      <div className="bg-gradient-to-br from-blue-900/50 via-cyan-900/50 to-teal-900/50 rounded-3xl p-10 border-2 border-blue-500/30 backdrop-blur-xl">
-        <h3 className="text-3xl font-bold mb-6 flex items-center gap-2">
-          <Coffee className="w-8 h-8 text-cyan-400" />
-          About Me
+      <div className="bg-gradient-to-br from-black via-gray-900 to-gray-800 rounded-3xl p-10 border-2 border-white/20 backdrop-blur-xl shadow-2xl">
+        <h3 className="text-3xl font-bold mb-6 flex items-center gap-2 text-white font-mono">
+          <Coffee className="w-8 h-8 text-gray-300" />
+          EXECUTIVE SUMMARY
         </h3>
         <div className="space-y-4 text-lg leading-relaxed">
-          <p className="text-gray-200">
-            🚀 Passionate <span className="text-cyan-400 font-bold">Computer Science Engineering student</span> and aspiring <span className="text-blue-400 font-bold">Full Stack Developer</span> with a proven track record in modern web technologies, AI/ML integration, and digital marketing strategies.
+          <p className="text-gray-200 font-mono">
+            ⚡ <span className="text-white font-bold">COMPUTER SCIENCE ENGINEERING STUDENT</span> and aspiring <span className="text-gray-300 font-bold">FULL STACK DEVELOPER</span> with demonstrated expertise in modern web technologies, AI/ML integration, and digital marketing strategies.
           </p>
-          <p className="text-gray-200">
-            💡 Demonstrated expertise through <span className="text-yellow-400 font-bold">10+ professional certifications</span> spanning React.js, AI technologies, SEO optimization, and cybersecurity. Strong foundation in programming with hands-on experience in <span className="text-green-400 font-bold">real-world project development</span> and social impact initiatives.
+          <p className="text-gray-200 font-mono">
+            � Professional foundation built through <span className="text-white font-bold">10+ ELITE CERTIFICATIONS</span> spanning React.js, AI technologies, SEO optimization, and cybersecurity. Proven track record in <span className="text-gray-300 font-bold">REAL-WORLD PROJECT DEVELOPMENT</span> and social impact initiatives.
           </p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-gray-900/70 rounded-2xl p-8 border-2 border-cyan-500/30 backdrop-blur-sm hover:scale-105 transition-transform">
-          <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
-            <BookOpen className="w-7 h-7 text-cyan-400" />
-            Education
+        <div className="bg-black/80 rounded-2xl p-8 border-2 border-gray-400/30 backdrop-blur-sm hover:scale-105 transition-transform shadow-xl">
+          <h3 className="text-2xl font-bold mb-6 flex items-center gap-3 text-white font-mono">
+            <BookOpen className="w-7 h-7 text-gray-300" />
+            EDUCATION
           </h3>
           <div className="space-y-3">
-            <p className="text-xl font-bold text-cyan-300">Bachelor of Technology</p>
-            <p className="text-lg text-gray-300">Computer Science Engineering</p>
-            <p className="text-gray-400">Babu Banarasi Das University, Lucknow</p>
-            <p className="text-blue-400 font-semibold">2022 - 2026</p>
+            <p className="text-xl font-bold text-white font-mono">BACHELOR OF TECHNOLOGY</p>
+            <p className="text-lg text-gray-300 font-mono">COMPUTER SCIENCE ENGINEERING</p>
+            <p className="text-gray-400 font-mono">BABU BANARASI DAS UNIVERSITY, LUCKNOW</p>
+            <p className="text-gray-300 font-semibold font-mono">2022 - 2026</p>
           </div>
         </div>
         
-        <div className="bg-gray-900/70 rounded-2xl p-8 border-2 border-blue-500/30 backdrop-blur-sm hover:scale-105 transition-transform">
-          <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
-            <MapPin className="w-7 h-7 text-blue-400" />
-            Location
+        <div className="bg-gray-900/80 rounded-2xl p-8 border-2 border-white/20 backdrop-blur-sm hover:scale-105 transition-transform shadow-xl">
+          <h3 className="text-2xl font-bold mb-6 flex items-center gap-3 text-white font-mono">
+            <MapPin className="w-7 h-7 text-gray-300" />
+            LOCATION
           </h3>
           <div className="space-y-2">
-            <p className="text-lg">SS-165,166 Sector C-1 L.D.A. Colony</p>
-            <p className="text-gray-300">Kanpur Road, Lucknow</p>
-            <p className="text-gray-400">Uttar Pradesh - 226012</p>
+            <p className="text-lg text-gray-200 font-mono">SS-165,166 SECTOR C-1 L.D.A. COLONY</p>
+            <p className="text-gray-300 font-mono">KANPUR ROAD, LUCKNOW</p>
+            <p className="text-gray-400 font-mono">UTTAR PRADESH - 226012</p>
           </div>
         </div>
       </div>
@@ -835,39 +1140,136 @@ const ProfessionalGamePortfolio = () => {
 
   const renderSkills = () => (
     <div className="space-y-6">
-      <h2 className="text-5xl font-black mb-8 flex items-center gap-4 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-        <Cpu className="w-12 h-12 text-green-400" />
-        Skill Tree
+      <h2 className="text-5xl font-black mb-8 flex items-center gap-4 text-white font-mono">
+        <Cpu className="w-12 h-12 text-gray-300" />
+        TECH ARSENAL
       </h2>
       
       {skillCategories.map((category, idx) => {
         const Icon = category.icon;
         return (
-          <div key={idx} className={`bg-gradient-to-br ${category.color} bg-opacity-10 rounded-3xl p-8 border-2 border-opacity-30 backdrop-blur-xl hover:scale-[1.02] transition-transform`}>
-            <h3 className="text-3xl font-bold mb-6 flex items-center gap-3">
-              <Icon className="w-8 h-8" />
+          <div key={idx} className={`bg-gradient-to-br ${category.color} bg-opacity-20 rounded-3xl p-8 border-2 ${category.borderColor} backdrop-blur-xl hover:scale-[1.02] transition-transform shadow-2xl`}>
+            <h3 className="text-3xl font-bold mb-6 flex items-center gap-3 text-white font-mono">
+              <Icon className="w-8 h-8 text-gray-300" />
               {category.category}
-              <span className="text-sm bg-white/20 px-3 py-1 rounded-full ml-auto">{category.level}</span>
+              <span className="text-sm bg-white/10 px-3 py-1 rounded-full ml-auto border border-gray-400">{category.level}</span>
             </h3>
             <div className="space-y-4">
-              {category.skills.map((skill, i) => (
-                <div key={i} className="bg-gray-900/50 rounded-xl p-4 hover:bg-gray-900/70 transition-colors">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-lg font-semibold">{skill.name}</span>
-                    <div className="flex gap-2">
-                      <span className="text-sm bg-white/10 px-3 py-1 rounded-full">{skill.projects} projects</span>
-                      <span className="text-sm bg-purple-500/30 px-3 py-1 rounded-full">{skill.mastery}</span>
+              {category.skills.map((skill, i) => {
+                const skillId = `skill-${category.category.replace(/[^a-zA-Z0-9]/g, '')}-${i}`;
+                const isSkillHovered = hoveredElement === skillId;
+                const animationDelay = i * 100;
+                
+                return (
+                  <div 
+                    key={i} 
+                    className="bg-black/60 rounded-xl p-4 transition-all duration-500 border border-gray-600/30 interactive-card glass-effect"
+                    onMouseEnter={() => handleElementHover(skillId, true)}
+                    onMouseLeave={() => handleElementHover(skillId, false)}
+                    style={{
+                      animationDelay: `${animationDelay}ms`,
+                      transform: isSkillHovered ? 'translateX(10px) scale(1.02)' : 'translateX(0) scale(1)',
+                      boxShadow: isSkillHovered 
+                        ? '0 10px 30px rgba(255,255,255,0.1), inset 0 1px 0 rgba(255,255,255,0.2)' 
+                        : '0 4px 15px rgba(0,0,0,0.3)'
+                    }}
+                  >
+                    {/* Hover glow effect */}
+                    {isSkillHovered && (
+                      <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-white/5 to-transparent pointer-events-none" />
+                    )}
+                    
+                    <div className="flex justify-between items-center mb-2 relative z-10">
+                      <span className={`text-lg font-semibold font-mono transition-all duration-300 ${
+                        isSkillHovered ? 'text-white neon-glow' : 'text-white'
+                      }`}>
+                        {skill.name}
+                      </span>
+                      <div className="flex gap-2">
+                        <span className={`text-sm px-3 py-1 rounded-full font-mono transition-all duration-300 ${
+                          isSkillHovered 
+                            ? 'bg-white/20 text-white border-white/40 scale-105' 
+                            : 'bg-white/10 text-gray-200 border-gray-500'
+                        } border`}>
+                          {skill.projects} PROJECTS
+                        </span>
+                        <span className={`text-sm px-3 py-1 rounded-full font-mono transition-all duration-300 ${
+                          isSkillHovered 
+                            ? 'bg-gray-600/70 text-white border-gray-300 scale-105' 
+                            : 'bg-gray-700/50 text-gray-100 border-gray-400'
+                        } border`}>
+                          {skill.mastery}
+                        </span>
+                      </div>
                     </div>
+                    
+                    {/* Interactive skill bar with advanced animations */}
+                    <div className="relative">
+                      <div className="w-full bg-gray-800 rounded-full h-3 overflow-hidden border border-gray-600 relative">
+                        {/* Background pattern */}
+                        <div className="absolute inset-0 opacity-10" style={{
+                          backgroundImage: 'linear-gradient(45deg, transparent 48%, rgba(255,255,255,0.1) 49%, rgba(255,255,255,0.1) 51%, transparent 52%)',
+                          backgroundSize: '8px 8px'
+                        }} />
+                        
+                        {/* Main progress bar */}
+                        <div 
+                          className={`h-full ${skill.color} transition-all duration-1000 border-r border-gray-400 skill-bar relative`}
+                          style={{ 
+                            width: visibleElements.has(skillId) || isSkillHovered ? `${skill.level}%` : '0%',
+                            filter: isSkillHovered ? 'brightness(1.2) drop-shadow(0 0 10px rgba(255,255,255,0.3))' : 'brightness(1)'
+                          }}
+                        >
+                          {/* Animated highlight */}
+                          {isSkillHovered && (
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse" />
+                          )}
+                        </div>
+                        
+                        {/* Skill level indicator */}
+                        <div 
+                          className={`absolute top-1/2 transform -translate-y-1/2 w-2 h-2 bg-white rounded-full transition-all duration-1000 ${
+                            isSkillHovered ? 'scale-150 shadow-lg' : 'scale-100'
+                          }`}
+                          style={{ 
+                            left: `${(visibleElements.has(skillId) || isSkillHovered ? skill.level : 0) - 1}%`,
+                            boxShadow: isSkillHovered ? '0 0 15px rgba(255,255,255,0.8)' : 'none'
+                          }}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="flex justify-between items-center mt-2">
+                      <div className={`text-sm font-mono transition-all duration-300 ${
+                        isSkillHovered ? 'text-white font-bold' : 'text-gray-300'
+                      }`}>
+                        {skill.level}% MASTERY
+                      </div>
+                      
+                      {/* Animated counter */}
+                      <div className={`text-xs font-mono transition-all duration-300 ${
+                        isSkillHovered ? 'text-white' : 'text-gray-400'
+                      }`}>
+                        {isSkillHovered ? `${animatedCounters[skillId] || skill.level}%` : `${skill.level}%`}
+                      </div>
+                    </div>
+                    
+                    {/* Floating particles on hover */}
+                    {isSkillHovered && Array.from({length: 3}).map((_, particleIndex) => (
+                      <div
+                        key={particleIndex}
+                        className="absolute w-1 h-1 bg-white rounded-full opacity-60 pointer-events-none"
+                        style={{
+                          left: `${10 + particleIndex * 30}%`,
+                          top: `${20 + (particleIndex % 2) * 20}%`,
+                          animation: `float ${1 + particleIndex * 0.3}s ease-in-out infinite`,
+                          animationDelay: `${particleIndex * 0.15}s`
+                        }}
+                      />
+                    ))}
                   </div>
-                  <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
-                    <div 
-                      className={`h-full bg-gradient-to-r ${category.color} transition-all duration-1000`}
-                      style={{ width: `${skill.level}%` }}
-                    />
-                  </div>
-                  <div className="text-right text-sm text-gray-400 mt-1">{skill.level}% Proficiency</div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         );
@@ -1104,22 +1506,78 @@ const ProfessionalGamePortfolio = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white relative overflow-hidden">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white relative overflow-hidden">
       <ParticleSystem />
       {showGameHUD && <GameHUD />}
       
-      {/* Navigation */}
+      {/* Enhanced Interactive Navigation */}
       <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-30">
-        <div className="bg-black/80 backdrop-blur-sm rounded-xl p-4 flex flex-wrap justify-center items-center border border-purple-500/30 gap-4">
+        <div className="bg-black/95 backdrop-blur-xl rounded-2xl p-4 flex flex-wrap justify-center items-center border-2 border-white/20 gap-4 shadow-2xl glass-effect">
+          {/* Home button with enhanced effects */}
           <button
             onClick={() => setCurrentLevel('home')}
-            className="px-4 py-2 bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+            onMouseEnter={() => handleElementHover('nav-home', true)}
+            onMouseLeave={() => handleElementHover('nav-home', false)}
+            className={`px-4 py-2 bg-gradient-to-r from-white to-gray-300 text-black rounded-lg transition-all flex items-center gap-2 font-mono font-bold ripple-effect ${
+              hoveredElement === 'nav-home' 
+                ? 'hover:from-gray-200 hover:to-gray-400 scale-110 shadow-xl' 
+                : 'hover:from-gray-200 hover:to-gray-400'
+            }`}
+            style={{
+              transform: hoveredElement === 'nav-home' ? 'scale(1.1) translateY(-2px)' : 'scale(1)',
+              boxShadow: hoveredElement === 'nav-home' 
+                ? '0 10px 25px rgba(255,255,255,0.3)' 
+                : '0 4px 15px rgba(0,0,0,0.3)'
+            }}
           >
-            <Home className="w-5 h-5" />
+            <Home className={`w-5 h-5 transition-all duration-300 ${
+              hoveredElement === 'nav-home' ? 'animate-bounce' : ''
+            }`} />
             <span className="hidden sm:inline">{levels.home.name}</span>
           </button>
-          <div className="hidden md:block text-lg font-semibold text-purple-300">
-            {levels[currentLevel].name}
+          
+          {/* Navigation breadcrumb with typewriter effect */}
+          <div className="hidden md:block relative">
+            <div className="text-lg font-semibold text-white font-mono relative overflow-hidden">
+              <span className="inline-block">
+                {levels[currentLevel].name}
+              </span>
+              <span className="absolute right-0 top-0 bottom-0 w-1 bg-white animate-pulse" />
+            </div>
+            
+            {/* Level progress indicator */}
+            <div className="w-full bg-gray-700/50 rounded-full h-1 mt-2 overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-white to-gray-300 rounded-full transition-all duration-1000"
+                style={{ 
+                  width: `${(Object.keys(levels).indexOf(currentLevel) / (Object.keys(levels).length - 1)) * 100}%` 
+                }}
+              />
+            </div>
+          </div>
+          
+          {/* Quick navigation dots */}
+          <div className="flex gap-2 ml-4">
+            {Object.entries(levels).map(([key, level], index) => (
+              <button
+                key={key}
+                onClick={() => setCurrentLevel(key)}
+                onMouseEnter={() => handleElementHover(`nav-dot-${key}`, true)}
+                onMouseLeave={() => handleElementHover(`nav-dot-${key}`, false)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  currentLevel === key 
+                    ? 'bg-white scale-125 shadow-lg' 
+                    : hoveredElement === `nav-dot-${key}`
+                      ? 'bg-gray-300 scale-110'
+                      : 'bg-gray-500 hover:bg-gray-400'
+                }`}
+                style={{
+                  boxShadow: currentLevel === key ? '0 0 15px rgba(255,255,255,0.6)' : 'none',
+                  animationDelay: `${index * 50}ms`
+                }}
+                title={level.name}
+              />
+            ))}
           </div>
         </div>
       </div>
@@ -1203,9 +1661,9 @@ const ProfessionalGamePortfolio = () => {
 
       {/* Footer */}
       <div className="max-w-7xl mx-auto mt-12 text-center text-gray-400 pb-8 px-4">
-        <p className="text-lg">© 2025 Abhishek Singh - Professional Gaming Portfolio</p>
-        <p className="text-sm mt-2">🎮 Keep exploring to unlock all achievements! 🏆</p>
-        <p className="text-xs mt-4 text-gray-500">Built with React, Tailwind CSS & Professional Gaming UI</p>
+        <p className="text-lg font-mono">© 2025 ABHISHEK SINGH - ELITE PROFESSIONAL PORTFOLIO</p>
+        <p className="text-sm mt-2 font-mono">⚡ PROFESSIONAL GAMING INTERFACE DESIGN ⚡</p>
+        <p className="text-xs mt-4 text-gray-600 font-mono">ENGINEERED WITH REACT, TAILWIND CSS & PREMIUM UI ARCHITECTURE</p>
       </div>
     </div>
   );
