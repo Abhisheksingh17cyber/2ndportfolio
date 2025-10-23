@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Award, Briefcase, Code, Mail, Linkedin, Github, MapPin, Phone, BookOpen, Trophy, Zap, Star, ChevronRight, Home, User, Target, Rocket, Terminal, Database, Cpu, Globe, TrendingUp, Coffee, Shield, GamepadIcon, Volume2, Play, Settings, Map, Heart, Activity, Sparkles, Crown, Swords, RotateCcw, Timer, Compass, Sword } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { Award, Briefcase, Code, Mail, Linkedin, Github, MapPin, Phone, BookOpen, Trophy, Zap, Star, ChevronRight, Home, User, Rocket, Terminal, Database, Cpu, Globe, TrendingUp, Coffee, Shield, GamepadIcon, Heart, Sparkles, Crown, Timer, Compass } from 'lucide-react';
 
 const ProfessionalGamePortfolio = () => {
   const [currentLevel, setCurrentLevel] = useState('home');
@@ -10,17 +10,16 @@ const ProfessionalGamePortfolio = () => {
   const [particles, setParticles] = useState([]);
   const [typing, setTyping] = useState('');
   const [combo, setCombo] = useState(0);
-  const [health, setHealth] = useState(100);
-  const [energy, setEnergy] = useState(100);
+  const [health] = useState(100);
+  const [energy] = useState(100);
   const [playerLevel, setPlayerLevel] = useState(1);
   const [exp, setExp] = useState(0);
-  const [soundEnabled, setSoundEnabled] = useState(true);
-  const [showMiniMap, setShowMiniMap] = useState(false);
+  const [soundEnabled] = useState(true);
   const [currentQuest, setCurrentQuest] = useState('Begin Your Digital Adventure');
   const [timeSpent, setTimeSpent] = useState(0);
-  const [showGameHUD, setShowGameHUD] = useState(true);
+  const [showGameHUD] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-  const [gameStats, setGameStats] = useState({
+  const [, setGameStats] = useState({
     sectionsVisited: 0,
     clickCount: 0,
     totalInteractions: 0,
@@ -140,7 +139,7 @@ const ProfessionalGamePortfolio = () => {
     setTimeout(() => notification.remove(), 4000);
   };
 
-  const levels = {
+  const levels = useMemo(() => ({
     home: { 
       name: '🏰 Command Nexus', 
       icon: Rocket, 
@@ -204,7 +203,7 @@ const ProfessionalGamePortfolio = () => {
       difficulty: '⭐⭐',
       rewards: '+120 XP'
     }
-  };
+  }), []);
 
   const skillCategories = [
     {

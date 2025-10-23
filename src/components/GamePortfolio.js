@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Award, Briefcase, Code, Mail, Linkedin, Github, MapPin, Phone, BookOpen, Trophy, Zap, Star, ChevronRight, Home, User, Target, Rocket, Terminal, Database, Cpu, Globe, TrendingUp, Coffee, Shield, GamepadIcon, Volume2, Play, Settings, Map, Heart, Activity, Sparkles, Crown, Swords } from 'lucide-react';
+import { Award, Briefcase, Code, Mail, Linkedin, Github, MapPin, Phone, BookOpen, Trophy, Zap, Star, ChevronRight, Home, User, Target, Rocket, Terminal, Database, Cpu, Globe, TrendingUp, Coffee, Shield } from 'lucide-react';
 
 const GamePortfolio = () => {
   const [currentLevel, setCurrentLevel] = useState('home');
@@ -10,21 +10,6 @@ const GamePortfolio = () => {
   const [particles, setParticles] = useState([]);
   const [typing, setTyping] = useState('');
   const [combo, setCombo] = useState(0);
-  const [health, setHealth] = useState(100);
-  const [energy, setEnergy] = useState(100);
-  const [level, setLevel] = useState(1);
-  const [exp, setExp] = useState(0);
-  const [soundEnabled, setSoundEnabled] = useState(true);
-  const [gameStats, setGameStats] = useState({
-    timeSpent: 0,
-    sectionsVisited: 0,
-    clickCount: 0,
-    totalInteractions: 0
-  });
-  const [showMiniMap, setShowMiniMap] = useState(false);
-  const [currentQuest, setCurrentQuest] = useState('Explore the Digital Universe');
-  const [inventoryItems, setInventoryItems] = useState([]);
-  const [showGameHUD, setShowGameHUD] = useState(true);
 
   const fullText = "Welcome to Abhishek's Digital Universe";
 
@@ -61,13 +46,55 @@ const GamePortfolio = () => {
   }, []);
 
   const levels = {
-    home: { name: 'Command Center', icon: Rocket, color: 'from-indigo-600 via-purple-600 to-pink-600', gradient: 'bg-gradient-to-br' },
-    about: { name: 'Dev Profile', icon: User, color: 'from-blue-600 via-cyan-600 to-teal-600', gradient: 'bg-gradient-to-tr' },
-    skills: { name: 'Tech Arsenal', icon: Cpu, color: 'from-green-600 via-emerald-600 to-teal-600', gradient: 'bg-gradient-to-bl' },
-    projects: { name: 'Project Vault', icon: Terminal, color: 'from-orange-600 via-red-600 to-pink-600', gradient: 'bg-gradient-to-tl' },
-    experience: { name: 'Career Journey', icon: Briefcase, color: 'from-yellow-600 via-orange-600 to-red-600', gradient: 'bg-gradient-to-br' },
-    certifications: { name: 'Achievement Nexus', icon: Award, color: 'from-purple-600 via-pink-600 to-rose-600', gradient: 'bg-gradient-to-tr' },
-    contact: { name: 'Connect Hub', icon: Globe, color: 'from-pink-600 via-rose-600 to-red-600', gradient: 'bg-gradient-to-bl' }
+    home: { 
+      name: 'Command Center', 
+      icon: Rocket, 
+      color: 'from-indigo-600 via-purple-600 to-pink-600', 
+      gradient: 'bg-gradient-to-br',
+      description: 'Home base and overview'
+    },
+    about: { 
+      name: 'Dev Profile', 
+      icon: User, 
+      color: 'from-blue-600 via-cyan-600 to-teal-600', 
+      gradient: 'bg-gradient-to-tr',
+      description: 'Personal information and background'
+    },
+    skills: { 
+      name: 'Tech Arsenal', 
+      icon: Cpu, 
+      color: 'from-green-600 via-emerald-600 to-teal-600', 
+      gradient: 'bg-gradient-to-bl',
+      description: 'Technical skills and expertise'
+    },
+    projects: { 
+      name: 'Project Vault', 
+      icon: Terminal, 
+      color: 'from-orange-600 via-red-600 to-pink-600', 
+      gradient: 'bg-gradient-to-tl',
+      description: 'Portfolio of development projects'
+    },
+    experience: { 
+      name: 'Career Journey', 
+      icon: Briefcase, 
+      color: 'from-yellow-600 via-orange-600 to-red-600', 
+      gradient: 'bg-gradient-to-br',
+      description: 'Professional experience and roles'
+    },
+    certifications: { 
+      name: 'Achievement Nexus', 
+      icon: Award, 
+      color: 'from-purple-600 via-pink-600 to-rose-600', 
+      gradient: 'bg-gradient-to-tr',
+      description: 'Certifications and accomplishments'
+    },
+    contact: { 
+      name: 'Connect Hub', 
+      icon: Globe, 
+      color: 'from-pink-600 via-rose-600 to-red-600', 
+      gradient: 'bg-gradient-to-bl',
+      description: 'Get in touch and social links'
+    }
   };
 
   const skillCategories = [
@@ -283,20 +310,13 @@ const GamePortfolio = () => {
     }
   ];
 
-  useEffect(() => {
-    if (!achievements.includes('explorer') && score === 0) {
-      setTimeout(() => unlockAchievement('explorer'), 2000);
-    }
-  }, [achievements, score]); // Removed unlockAchievement from dependencies to avoid infinite loops
-
-  const unlockAchievement = (type) => {
+  const unlockAchievement = useCallback((type) => {
     if (achievements.includes(type)) return;
     
     const newAchievements = [...achievements, type];
     setAchievements(newAchievements);
-    const newScore = score + 100;
-    setScore(newScore);
-    setCombo(combo + 1);
+    setScore(prevScore => prevScore + 100);
+    setCombo(prevCombo => prevCombo + 1);
     
     const messages = {
       explorer: '🎮 ACHIEVEMENT UNLOCKED: Digital Explorer - Welcome aboard!',
@@ -313,7 +333,13 @@ const GamePortfolio = () => {
     achievement.textContent = messages[type];
     document.body.appendChild(achievement);
     setTimeout(() => achievement.remove(), 3000);
-  };
+  }, [achievements]);
+
+  useEffect(() => {
+    if (!achievements.includes('explorer') && score === 0) {
+      setTimeout(() => unlockAchievement('explorer'), 2000);
+    }
+  }, [achievements, score, unlockAchievement]);
 
   const navigateToLevel = (level) => {
     setCurrentLevel(level);
@@ -850,42 +876,64 @@ const GamePortfolio = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white p-4 md:p-8">
-      <div className="max-w-7xl mx-auto mb-8">
-        <div className="bg-gray-800/70 backdrop-blur-sm rounded-2xl p-4 flex flex-wrap justify-between items-center border border-purple-500/30 gap-4">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigateToLevel('home')}
-              className="px-4 py-2 bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
-            >
-              <Home className="w-5 h-5" />
-              <span className="hidden sm:inline">Command Center</span>
-            </button>
-            <div className="hidden md:block text-lg font-semibold">
-              {levels[currentLevel].name}
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+      {/* Animated particles background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        {particles.map(p => (
+          <div
+            key={p.id}
+            className="absolute bg-blue-400/5 rounded-full animate-pulse"
+            style={{
+              left: `${p.x}%`,
+              top: `${p.y}%`,
+              width: `${p.size}px`,
+              height: `${p.size}px`
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Navigation Header */}
+      <div className="relative z-10 px-4 md:px-8 pt-8">
+        <div className="max-w-7xl mx-auto mb-8">
+          <div className="bg-slate-900/80 backdrop-blur-xl rounded-xl p-6 flex flex-wrap justify-between items-center border border-slate-700 shadow-2xl gap-4">
+            <div className="flex items-center gap-6">
+              <button
+                onClick={() => navigateToLevel('home')}
+                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 flex items-center gap-3 shadow-lg font-semibold"
+              >
+                <Home className="w-5 h-5" />
+                <span className="hidden sm:inline">Command Center</span>
+              </button>
+              <div className="hidden md:block text-xl font-bold text-blue-300">
+                {levels[currentLevel].name}
+              </div>
             </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="bg-yellow-600/30 px-4 py-2 rounded-lg flex items-center gap-2">
-              <Star className="w-5 h-5 text-yellow-400" />
-              <span className="font-bold">{score} XP</span>
-            </div>
-            <div className="bg-purple-600/30 px-4 py-2 rounded-lg flex items-center gap-2">
-              <Trophy className="w-5 h-5 text-purple-400" />
-              <span className="font-bold">{achievements.length}</span>
+            <div className="flex items-center gap-6">
+              <div className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 px-6 py-3 rounded-lg flex items-center gap-3 border border-yellow-500/30">
+                <Star className="w-5 h-5 text-yellow-400" />
+                <span className="font-bold text-yellow-300">{score} XP</span>
+              </div>
+              <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 px-6 py-3 rounded-lg flex items-center gap-3 border border-purple-500/30">
+                <Trophy className="w-5 h-5 text-purple-400" />
+                <span className="font-bold text-purple-300">{achievements.length} Badges</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto">
-        {currentLevel === 'home' && renderHome()}
+      {/* Main Content */}
+      <div className="relative z-10 px-4 md:px-8 pb-8">
+        <div className="max-w-7xl mx-auto">
+          {currentLevel === 'home' && renderHome()}
         {currentLevel === 'about' && renderAbout()}
         {currentLevel === 'skills' && renderSkills()}
         {currentLevel === 'projects' && renderProjects()}
         {currentLevel === 'experience' && renderExperience()}
         {currentLevel === 'certifications' && renderCertifications()}
         {currentLevel === 'contact' && renderContact()}
+        </div>
       </div>
 
       {showModal && modalContent && (
