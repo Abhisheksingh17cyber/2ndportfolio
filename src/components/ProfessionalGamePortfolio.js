@@ -1506,7 +1506,29 @@ const ProfessionalGamePortfolio = () => {
   }
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white relative overflow-hidden">
+    <div ref={containerRef} className="min-h-screen relative overflow-hidden" style={{
+      background: `
+        linear-gradient(135deg, #000000 0%, #1a1a1a 25%, #2d2d30 50%, #1a1a1a 75%, #000000 100%),
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.05) 0%, transparent 50%),
+        radial-gradient(circle at 40% 60%, rgba(255,255,255,0.03) 0%, transparent 50%)
+      `,
+      backgroundAttachment: 'fixed'
+    }}>
+      {/* Professional Grid Pattern Overlay */}
+      <div className="absolute inset-0 opacity-10" style={{
+        backgroundImage: `
+          linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
+        `,
+        backgroundSize: '50px 50px'
+      }} />
+      
+      {/* Professional Vignette Effect */}
+      <div className="absolute inset-0" style={{
+        background: 'radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.4) 100%)'
+      }} />
+      
       <ParticleSystem />
       {showGameHUD && <GameHUD />}
       
