@@ -1,11 +1,11 @@
 import React from 'react';
-import MinimalistPortfolio from './components/MinimalistPortfolio';
+import GamePortfolio from './components/GamePortfolio';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
-      <MinimalistPortfolio />
+      <GamePortfolio />
     </div>
   );
 }
