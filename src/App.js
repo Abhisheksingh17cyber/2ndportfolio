@@ -1,11 +1,11 @@
 import React from 'react';
-import ProfessionalGamePortfolio from './components/ProfessionalGamePortfolio';
+import GamePortfolio from './components/GamePortfolio';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
-      <ProfessionalGamePortfolio />
+      <GamePortfolio />
     </div>
   );
 }
