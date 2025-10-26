@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Home, User, Briefcase, Terminal, Cpu, Award, Globe, Volume2, VolumeX } from 'lucide-react';
 
 const GamePortfolio = () => {
@@ -15,7 +15,7 @@ const GamePortfolio = () => {
 
   const welcomeText = ">>> WELCOME TO ABHISHEK.EXE <<<";
 
-  const levels = {
+  const levels = useMemo(() => ({
     home: { name: 'HOME BASE', icon: Home, description: 'Main Console' },
     about: { name: 'PLAYER INFO', icon: User, description: 'Character Data' },
     experience: { name: 'CAREER LOG', icon: Briefcase, description: 'Quest History' },
@@ -23,19 +23,19 @@ const GamePortfolio = () => {
     skills: { name: 'TECH ARSENAL', icon: Cpu, description: 'Abilities' },
     certifications: { name: 'ACHIEVEMENTS', icon: Award, description: 'Unlocked Badges' },
     contact: { name: 'COMM LINK', icon: Globe, description: 'Network Portal' }
-  };
+  }), []);
 
-  const gainScore = (points) => {
+  const gainScore = useCallback((points) => {
     setScore(prev => prev + points);
     setExp(prev => prev + points / 2);
-  };
+  }, []);
 
-  const gainAchievement = (title, description) => {
+  const gainAchievement = useCallback((title, description) => {
     const newAchievement = { id: Date.now(), title, description };
     setAchievements(prev => [...prev, newAchievement]);
-  };
+  }, []);
 
-  const handleNavigation = (level) => {
+  const handleNavigation = useCallback((level) => {
     setCurrentLevel(level);
     gainScore(50);
     
@@ -46,7 +46,7 @@ const GamePortfolio = () => {
       localStorage.setItem('visitedLevels', JSON.stringify(visitedLevels));
       gainAchievement('Explorer', `Discovered ${levels[level].name}`);
     }
-  };
+  }, [gainScore, gainAchievement, levels]);
 
   const startGame = () => {
     setGameStarted(true);
@@ -73,7 +73,7 @@ const GamePortfolio = () => {
       setHealth(100);
       gainAchievement('Level Up!', `Reached Level ${playerLevel + 1}`);
     }
-  }, [exp, playerLevel]);
+  }, [exp, playerLevel, gainAchievement]);
 
   // Matrix particles
   useEffect(() => {
@@ -365,7 +365,7 @@ const GamePortfolio = () => {
       
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {[
-          { category: 'FRONTEND', skills: ['React.js: 90%', 'JavaScript: 85%', 'HTML/CSS: 95%', 'Tailwind: 88%'] },
+          { category: 'FRONTEND', skills: ['React.js: 90%', 'JS/ES6+: 85%', 'HTML/CSS: 95%', 'Tailwind: 88%'] },
           { category: 'BACKEND', skills: ['Node.js: 80%', 'Python: 82%', 'REST APIs: 85%', 'Databases: 75%'] },
           { category: 'AI/ML', skills: ['Generative AI: 85%', 'Prompt Engineering: 90%', 'AI Integration: 80%', 'MCP: 75%'] },
           { category: 'TOOLS', skills: ['Git: 92%', 'VS Code: 95%', 'Docker: 70%', 'AWS: 68%'] },
