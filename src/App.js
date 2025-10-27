@@ -1,11 +1,11 @@
 import React from 'react';
-import GamePortfolio from './components/GamePortfolio';
+import MatrixPortfolio from './components/MatrixPortfolio';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
-      <GamePortfolio />
+      <MatrixPortfolio />
     </div>
   );
 }
