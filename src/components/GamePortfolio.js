@@ -13,7 +13,7 @@ const GamePortfolio = () => {
   const [particles, setParticles] = useState([]);
   const [achievements, setAchievements] = useState([]);
 
-  const welcomeText = ">>> WELCOME TO ABHISHEK.EXE <<<";
+  const welcomeText = ">>> MATRIX GAMING PORTFOLIO V2.0 <<<";
 
   const levels = useMemo(() => ({
     home: { name: 'HOME BASE', icon: Home, description: 'Main Console' },
@@ -135,19 +135,22 @@ const GamePortfolio = () => {
       
       <div className="text-center z-10">
         <div className="mb-8">
-          <h1 className="text-5xl font-mono text-white mb-4 tracking-wider">
+          <h1 className="text-5xl font-mono text-green-400 mb-4 tracking-wider animate-pulse">
             {typing}<span className="animate-pulse">|</span>
           </h1>
-          <p className="text-lg text-green-400 font-mono">
-            A DEVELOPER'S INTERACTIVE EXPERIENCE
+          <p className="text-lg text-white font-mono">
+            🎮 ENTERING THE MATRIX... PORTFOLIO LOADING... 🎮
+          </p>
+          <p className="text-sm text-green-300 font-mono mt-2">
+            DEVELOPER: ABHISHEK SINGH | STATUS: ONLINE | LEVEL: EXPERT
           </p>
         </div>
         
         <button 
           onClick={startGame}
-          className="bg-white text-black px-8 py-4 font-mono text-xl border-4 border-white hover:bg-black hover:text-white transition-all duration-300 tracking-wider transform hover:scale-105"
+          className="bg-green-500 text-black px-12 py-6 font-mono text-2xl border-4 border-green-400 hover:bg-black hover:text-green-400 hover:border-green-300 transition-all duration-300 tracking-wider transform hover:scale-110 animate-pulse shadow-lg shadow-green-400/50"
         >
-          {'>>>'} PRESS START {'<<<'}
+          {'>>> 🎮 START MATRIX GAMING EXPERIENCE 🎮 <<<'}
         </button>
         
         <div className="text-center text-gray-400 font-mono text-sm mt-4">
